@@ -2,6 +2,8 @@
 
 **Ghana's changing land and water, seen through cloud by NASA-ISRO NISAR radar.**
 
+**Live app: [asaase.earth](https://asaase.earth)**
+
 *Asaase* means "earth" in Twi. This is our entry for the NASA Space Apps Challenge 2026,
 [Dancing with the SARs](https://www.spaceappschallenge.org/2026/challenges/dancing-with-the-sars/).
 
@@ -49,7 +51,7 @@ The method, study areas, tracks, results so far and what we are still checking a
 
 ```
 asaase/
-├── web/        React + TypeScript + MapLibre app (static; deploys to GitHub Pages)
+├── web/        React + TypeScript + MapLibre app (static; live at asaase.earth on Cloudflare Pages)
 │   └── public/data/<story>/   processed radar layers and story.json, written by the pipeline
 ├── pipeline/   Python: find, download and process NISAR GCOV into web layers
 ├── data/       Local downloads and intermediates (git-ignored; raw files are several GB each)

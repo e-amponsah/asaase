@@ -28,3 +28,6 @@ Thumbs.db
 
 # team-only planning, briefs and presentations (shared privately, never pushed)
 internal/
+
+# Cloudflare Wrangler local cache (account details; never pushed)
+.wrangler/
