@@ -131,7 +131,41 @@ settlements (`asaase exposure floods`).
 - New disturbance since the first pass grows to about **210–240 ha** by September and October, after
   correcting a seasonal drift of up to −0.65 dB.
 - Most of the damage predates NISAR's first pass, so four months show the footprint far more than its
-  growth. Sentinel-1 (2017–2026) is planned to show the longer spread.
+  growth. Sentinel-1 shows the longer spread (next section).
+
+### Galamsey before NISAR: Sentinel-1, 2016–2026
+
+NISAR starts in mid-2026. To see how fast the scars spread before that, we use Sentinel-1 (C-band,
+VH polarization), which has imaged Ghana every 12 days since 2015.
+
+- **Data:** the radiometrically terrain-corrected Sentinel-1 product on Microsoft Planetary Computer
+  (`sentinel-1-rtc`), read remotely: only our window, at about 40 m (`asaase longview galamsey --fetch`).
+- **One composite per year:** the median of 9–15 passes from December to February, the dry season,
+  from both ascending orbits that cover the area. About 200 m is trimmed off each scene's edge, where
+  swath borders carry noise.
+- **Threshold matched to NISAR:** we chose the VH threshold whose scar map best matches NISAR's
+  footprint of 24 June 2026: −14.5 dB (intersection over union 0.56 with the 2026 composite).
+- **Year-to-year calibration:** each year is shifted so intact forest has the same VH as in 2026
+  (shifts of at most 0.26 dB), so changes in the satellite fleet (Sentinel-1B failed in December 2021)
+  do not show up as scar growth.
+
+| Dry season | Scars (km²) | | Dry season | Scars (km²) |
+| --- | --- | --- | --- | --- |
+| 2016 | 81 | | 2022 | 81 |
+| 2017 | 116 | | 2023 | 95 |
+| 2018 | 72 | | 2024 | 116 |
+| 2019 | 73 | | 2025 | 158 |
+| 2020 | 71 | | 2026 | 170 |
+| 2021 | **67** (lowest) | | | |
+
+- From the 2021 low, the scarred area grew about **2.5 times by 2026**, spreading from the Offin corridor
+  up the side valleys (visible year by year in the app).
+- The 2026 Sentinel-1 figure (170 km²) is close to NISAR's (150 km² on 24 June 2026), as expected from
+  the calibration.
+- **Caveats:** C-band separates scars from forest less sharply than NISAR's L-band (scar median
+  −14.4 dB vs −13.0 dB for forest), so single-year values carry noise; 2017 has only 9 passes and some
+  scattered speckle, so its peak is partly noise. The western edge (about 3.5% of the area) is outside
+  both orbits' trimmed swaths.
 
 ### How we checked the thresholds
 
@@ -191,7 +225,6 @@ We therefore keep the HV footprint for detection and do not show coherence as a 
   galamsey in the app.
 - **Finer detail:** the 3 × 3 cleaning step at about 68 m pixels removes features narrower than about
   200 m, such as thin riverbank flooding.
-- **Longer history:** Sentinel-1 (C-band, 2017–2026) to show how fast the mining scars spread before NISAR.
 - **Forest reserves:** boundaries from WDPA, to report mining damage per reserve.
 
 ## Reproduce

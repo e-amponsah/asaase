@@ -119,6 +119,15 @@ export default function App() {
     });
   };
 
+  // Sentinel-1 year from the panel. On phones the panel sits below the map, so bring the map into view.
+  const pickYear = (y: number | null) => {
+    setLongYear(y);
+    setCompareIndex(null);
+    if (y !== null && window.matchMedia("(max-width: 860px)").matches) {
+      document.querySelector(".stage")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
+
   const pickDate = (d: string) => {
     const i = dates.indexOf(d);
     if (i >= 0) setIndex(i);
@@ -151,7 +160,7 @@ export default function App() {
             onPickDate={pickDate}
             listening={listening}
             onListen={toggleListen}
-            extra={longview ? <LongViewCard data={longview} year={longYear} onYear={(y) => { setLongYear(y); setCompareIndex(null); }} /> : null}
+            extra={longview ? <LongViewCard data={longview} year={longYear} onYear={pickYear} /> : null}
           />
           <section className="stage" aria-label="Radar map">
             <MapView
