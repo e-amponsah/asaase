@@ -14,6 +14,7 @@ for the method, tracks, dates and results.
 | `export.py` | Fixed lon/lat grid per story, PNG overlays |
 | `build.py` | Full run, writing `web/public/data/<story>/story.json` |
 | `quicklook.py` | Before / after / difference PNG for a pair of passes |
-| `cli.py` | The `asaase` command: `search`, `download`, `quicklook`, `build` |
+| `coherence.py` | Read and cache interferometric coherence from GUNW pairs (remote, window only) |
+| `cli.py` | The `asaase` command: `search`, `download`, `quicklook`, `coherence`, `build` |
 
 Run the tests with `pytest -q` and lint with `ruff check .`.

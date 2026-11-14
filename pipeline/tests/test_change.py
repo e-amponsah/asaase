@@ -72,3 +72,11 @@ def test_clamped_otsu_clamps_to_range():
     assert t > -15                                        # Otsu alone lands above the cap...
     assert clamped_otsu(values, -24, -15, -17) == -15     # ...so it is clamped to it
     assert clamped_otsu(values, -24, 0, -17) == t         # inside the range: unchanged
+
+
+def test_parse_gunw_name():
+    from asaase.coherence import parse_gunw
+    m = parse_gunw("NISAR_L2_PR_GUNW_024_145_A_005_025_2000_SH_20260706T054746_20260706T054820_"
+                   "20260718T054745_20260718T054820_P05023_N_F_J_001.h5")
+    assert (m["path"], m["direction"], m["frame"]) == (145, "A", 5)
+    assert (m["ref"], m["sec"], m["crid"], m["version"]) == ("2026-07-06", "2026-07-18", "P05023", "001")

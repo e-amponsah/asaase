@@ -32,6 +32,9 @@ def main(argv: list[str] | None = None) -> None:
     b = sub.add_parser("build", help="write web layers and story.json for the app")
     b.add_argument("story", choices=stories)
 
+    c = sub.add_parser("coherence", help="fetch coherence windows from GUNW pairs (reads remotely, caches)")
+    c.add_argument("story", choices=stories)
+
     args = ap.parse_args(argv)
 
     if args.cmd in ("search", "download"):
@@ -56,6 +59,11 @@ def main(argv: list[str] | None = None) -> None:
         from .quicklook import quicklook
 
         print(quicklook(args.story, args.before, args.after, args.pol))
+    elif args.cmd == "coherence":
+        from .coherence import fetch
+
+        paths = fetch(config.STORIES[args.story])
+        print(f"{len(paths)} cached coherence window(s) in {config.WORK_DIR / 'coherence'}")
     elif args.cmd == "build":
         from .build import build_story
 

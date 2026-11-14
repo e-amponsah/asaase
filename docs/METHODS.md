@@ -135,6 +135,22 @@ Our setting (3 dB, 1.5 dB) keeps false alarms near zero while keeping most of th
 the nine combinations peaks on 21 September, so the flood's timing does not depend on the thresholds;
 its area does (roughly 5–18 km² for sensible settings).
 
+### Coherence: tested, not used for detection
+
+We also read interferometric coherence (how much the ground's radar fingerprint stays the same between
+passes) from the NISAR GUNW products for all eight consecutive galamsey pairs, June to October. Only the
+small study-area window of each 2 GB file is read over the network (`asaase coherence galamsey`).
+
+- Median coherence is about 0.5 both inside the mining scars and in intact forest, and the share of
+  low-coherence scar pixels rises and falls with the weather of each pair (5–14%). So at 12-day L-band
+  in the rainy season, coherence cannot tell active digging from older scars.
+- Places that stay incoherent on almost every pair are standing water: flooded pits and the tailings
+  pond (HV about −22 dB). The HV footprint already captures them.
+- The median-coherence map does show large straight-edged areas of lower coherence that look like
+  forest-reserve boundaries (dense intact canopy). We will use it to check reserve outlines.
+
+We therefore keep the HV footprint for detection and do not show coherence as a mining layer.
+
 ### Data quality
 
 - **28 September (galamsey)** came with a geolocation error of about 80 m (3.6 pixels). The
@@ -151,7 +167,6 @@ its area does (roughly 5–18 km² for sensible settings).
 - **Longer history:** Sentinel-1 (C-band, 2017–2026) to show how fast the mining scars spread before NISAR.
 - **Context layers:** forest-reserve boundaries (WDPA), population (WorldPop) and settlements
   (OpenStreetMap), to report damage per reserve and people near flood water.
-- **Coherence:** NISAR interferometric products (GUNW) to flag ground disturbed between passes.
 
 ## Reproduce
 
