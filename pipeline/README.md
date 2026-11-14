@@ -14,7 +14,8 @@ for the method, tracks, dates and results.
 | `export.py` | Fixed lon/lat grid per story, PNG overlays |
 | `build.py` | Full run, writing `web/public/data/<story>/story.json` |
 | `quicklook.py` | Before / after / difference PNG for a pair of passes |
+| `exposure.py` | People in and within 1 km of flood water per pass (WorldPop + OpenStreetMap) |
 | `coherence.py` | Read and cache interferometric coherence from GUNW pairs (remote, window only) |
-| `cli.py` | The `asaase` command: `search`, `download`, `quicklook`, `coherence`, `build` |
+| `cli.py` | The `asaase` command: `search`, `download`, `quicklook`, `coherence`, `exposure`, `build` |
 
 Run the tests with `pytest -q` and lint with `ruff check .`.

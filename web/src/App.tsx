@@ -20,7 +20,7 @@ export default function App() {
   const [view, setView] = useState<View>(initialView);
   const [storyId, setStoryId] = useState<StoryId>(view === "floods" ? "floods" : "galamsey");
   const story = STORIES[storyId];
-  const { data } = useStoryData(story);
+  const { data, exposure } = useStoryData(story);
 
   const dates = useMemo(
     () => (data.frames.length ? data.frames.map((f) => f.date) : story.dates),
@@ -123,6 +123,7 @@ export default function App() {
   const frame = data.frames.find((f) => f.date === date);
   const compareDate = cmpAt !== null ? dates[cmpAt] : null;
   const compareFrame = compareDate ? data.frames.find((f) => f.date === compareDate) : undefined;
+  const people = exposure?.frames[date];
 
   return (
     <div className="app">
@@ -135,6 +136,7 @@ export default function App() {
             story={story}
             data={data}
             frame={frame}
+            people={people}
             currentDate={date}
             onPickDate={pickDate}
             listening={listening}
@@ -145,6 +147,7 @@ export default function App() {
               bounds={data.bounds}
               storyKey={story.id}
               places={story.places}
+              communities={showChange ? people?.communities ?? [] : []}
               frame={frame}
               compareFrame={compareFrame}
               date={date}

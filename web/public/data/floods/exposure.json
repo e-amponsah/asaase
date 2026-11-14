@@ -1,0 +1,127 @@
+{
+  "source": "WorldPop 2020 constrained (UN-adjusted), 100 m; OpenStreetMap places",
+  "bufferM": 1000.0,
+  "note": "Modelled population, rounded. Dry baseline passes are left out.",
+  "frames": {
+    "2026-08-28": {
+      "peopleInside": 0,
+      "peopleWithin1km": 2100,
+      "communitiesWithin1km": 2,
+      "communities": [
+        {
+          "name": "Licha",
+          "lon": -1.1302,
+          "lat": 10.1215,
+          "kind": "village",
+          "distanceM": 670,
+          "people": 1000
+        },
+        {
+          "name": "Sugtampia",
+          "lon": -0.975,
+          "lat": 9.8564,
+          "kind": "village",
+          "distanceM": 400,
+          "people": 300
+        }
+      ]
+    },
+    "2026-09-09": {
+      "peopleInside": 30,
+      "peopleWithin1km": 2400,
+      "communitiesWithin1km": 3,
+      "communities": [
+        {
+          "name": "Kubagna",
+          "lon": -1.2154,
+          "lat": 10.1792,
+          "kind": "village",
+          "distanceM": 580,
+          "people": 600
+        },
+        {
+          "name": "Nayeri",
+          "lon": -1.0047,
+          "lat": 10.4992,
+          "kind": "village",
+          "distanceM": 940,
+          "people": 410
+        },
+        {
+          "name": "Sugtampia",
+          "lon": -0.975,
+          "lat": 9.8564,
+          "kind": "village",
+          "distanceM": 400,
+          "people": 300
+        }
+      ]
+    },
+    "2026-09-21": {
+      "peopleInside": 30,
+      "peopleWithin1km": 3400,
+      "communitiesWithin1km": 3,
+      "communities": [
+        {
+          "name": "Kubori",
+          "lon": -1.2931,
+          "lat": 10.1399,
+          "kind": "village",
+          "distanceM": 910,
+          "people": 2200
+        },
+        {
+          "name": "Willi",
+          "lon": -1.0017,
+          "lat": 9.5225,
+          "kind": "village",
+          "distanceM": 920,
+          "people": 470
+        },
+        {
+          "name": "Kuba",
+          "lon": -1.2127,
+          "lat": 10.2605,
+          "kind": "village",
+          "distanceM": 560,
+          "people": 260
+        }
+      ]
+    },
+    "2026-10-03": {
+      "peopleInside": 30,
+      "peopleWithin1km": 2000,
+      "communitiesWithin1km": 2,
+      "communities": [
+        {
+          "name": "Willi",
+          "lon": -1.0017,
+          "lat": 9.5225,
+          "kind": "village",
+          "distanceM": 990,
+          "people": 470
+        },
+        {
+          "name": "Kuba",
+          "lon": -1.2127,
+          "lat": 10.2605,
+          "kind": "village",
+          "distanceM": 770,
+          "people": 260
+        }
+      ]
+    },
+    "2026-10-15": {
+      "peopleInside": 0,
+      "peopleWithin1km": 1100,
+      "communitiesWithin1km": 0,
+      "communities": []
+    },
+    "2026-10-27": {
+      "peopleInside": 0,
+      "peopleWithin1km": 20,
+      "communitiesWithin1km": 0,
+      "communities": []
+    }
+  }
+}

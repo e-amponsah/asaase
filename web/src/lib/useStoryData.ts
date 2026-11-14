@@ -1,21 +1,25 @@
 import { useEffect, useState } from "react";
-import type { StoryContent, StoryData } from "../types";
+import type { Exposure, StoryContent, StoryData } from "../types";
 
 /**
  * Loads pipeline output (public/data/<story>/story.json). Until the pipeline has run,
  * falls back to the story's illustrative series, with no radar frames and illustrative: true.
  */
-export function useStoryData(story: StoryContent): { data: StoryData; loading: boolean } {
-  const [state, setState] = useState<{ id: string; data: StoryData | null }>({ id: "", data: null });
+export function useStoryData(story: StoryContent): { data: StoryData; exposure: Exposure | null; loading: boolean } {
+  const [state, setState] = useState<{ id: string; data: StoryData | null; exposure: Exposure | null }>(
+    { id: "", data: null, exposure: null },
+  );
 
   useEffect(() => {
     let cancelled = false;
-    fetch(`${import.meta.env.BASE_URL}data/${story.id}/story.json`)
-      .then((r) => (r.ok ? r.json() : null))
-      .catch(() => null)
-      .then((json: StoryData | null) => {
-        if (!cancelled) setState({ id: story.id, data: json?.frames?.length ? json : null });
-      });
+    const get = <T,>(file: string): Promise<T | null> =>
+      fetch(`${import.meta.env.BASE_URL}data/${story.id}/${file}`)
+        .then((r) => (r.ok ? r.json() : null))
+        .catch(() => null);
+    // exposure.json is optional (floods only).
+    Promise.all([get<StoryData>("story.json"), get<Exposure>("exposure.json")]).then(([json, exposure]) => {
+      if (!cancelled) setState({ id: story.id, data: json?.frames?.length ? json : null, exposure });
+    });
     return () => {
       cancelled = true;
     };
@@ -32,5 +36,10 @@ export function useStoryData(story: StoryContent): { data: StoryData; loading: b
     series: story.illustrativeSeries,
   };
 
-  return { data: state.id === story.id && state.data ? state.data : fallback, loading: state.id !== story.id };
+  const current = state.id === story.id;
+  return {
+    data: current && state.data ? state.data : fallback,
+    exposure: current ? state.exposure : null,
+    loading: !current,
+  };
 }

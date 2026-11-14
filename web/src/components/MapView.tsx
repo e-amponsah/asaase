@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import maplibregl, { type ImageSource, type Map as MLMap, type StyleSpecification } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { shortDate } from "../lib/format";
-import type { Bounds, Frame, Place } from "../types";
+import type { Bounds, Community, Frame, Place } from "../types";
 
 export type Basemap = "dark" | "satellite";
 
@@ -10,6 +10,7 @@ interface Props {
   bounds: Bounds;
   storyKey: string;
   places: Place[];
+  communities?: Community[];
   frame?: Frame;
   compareFrame?: Frame;
   date: string;
@@ -95,7 +96,7 @@ function placeMarker(p: Place) {
 }
 
 export function MapView(props: Props) {
-  const { bounds, storyKey, places, frame, compareFrame, date, compareDate, basemap, showBase, showFootprint, showChange, hasData } = props;
+  const { bounds, storyKey, places, communities = [], frame, compareFrame, date, compareDate, basemap, showBase, showFootprint, showChange, hasData } = props;
   const mainEl = useRef<HTMLDivElement>(null);
   const cmpEl = useRef<HTMLDivElement>(null);
   const maps = useRef<{ main: MLMap; cmp: MLMap } | null>(null);
@@ -149,6 +150,20 @@ export function MapView(props: Props) {
     return () => markers.forEach((mk) => mk.remove());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loaded, storyKey]);
+
+  // Settlements near flood water on the current pass (main map only).
+  const communityKey = communities.map((c) => c.name).join("|");
+  useEffect(() => {
+    if (!loaded || !maps.current) return;
+    const main = maps.current.main;
+    const markers = communities.map((c) => {
+      const mk = placeMarker(c);
+      mk.getElement().classList.add("community");
+      return mk.addTo(main);
+    });
+    return () => markers.forEach((mk) => mk.remove());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loaded, communityKey]);
 
   useEffect(() => {
     if (!loaded || !maps.current) return;

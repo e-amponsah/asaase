@@ -80,3 +80,8 @@ def test_parse_gunw_name():
                    "20260718T054745_20260718T054820_P05023_N_F_J_001.h5")
     assert (m["path"], m["direction"], m["frame"]) == (145, "A", 5)
     assert (m["ref"], m["sec"], m["crid"], m["version"]) == ("2026-07-06", "2026-07-18", "P05023", "001")
+
+
+def test_exposure_rounding():
+    from asaase.exposure import _round
+    assert (_round(27.4), _round(994), _round(3445)) == (30, 990, 3400)

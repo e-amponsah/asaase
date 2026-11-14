@@ -1,5 +1,5 @@
 import { formatValue } from "../lib/format";
-import type { Frame, StoryContent, StoryData } from "../types";
+import type { ExposureFrame, Frame, StoryContent, StoryData } from "../types";
 import { SeriesChart } from "./SeriesChart";
 
 /** Per-pass numbers from the pipeline worth showing under the chart. */
@@ -13,13 +13,14 @@ interface Props {
   story: StoryContent;
   data: StoryData;
   frame?: Frame;
+  people?: ExposureFrame;
   currentDate: string;
   onPickDate: (d: string) => void;
   listening: boolean;
   onListen: () => void;
 }
 
-export function StoryPanel({ story, data, frame, currentDate, onPickDate, listening, onListen }: Props) {
+export function StoryPanel({ story, data, frame, people, currentDate, onPickDate, listening, onListen }: Props) {
   const breakdown = Object.entries(frame?.stats ?? {}).filter(([k]) => k in BREAKDOWN);
   return (
     <aside className="panel" aria-label={story.title}>
@@ -63,6 +64,26 @@ export function StoryPanel({ story, data, frame, currentDate, onPickDate, listen
                 </li>
               ))}
             </ul>
+          )}
+          {people && (
+            <div className="people">
+              <p className="people-head">
+                <strong>{people.peopleWithin1km < 50 ? "Almost no one" : `≈ ${people.peopleWithin1km.toLocaleString("en-GB")} people`}</strong>
+                {" "}live within 1 km of flood water on this pass
+              </p>
+              {people.communities.length > 0 && (
+                <ul className="people-list">
+                  {people.communities.slice(0, 4).map((c) => (
+                    <li key={c.name}>
+                      <span className="people-dot" />
+                      {c.name}
+                      <span>{c.distanceM < 50 ? "in flood water" : `${(c.distanceM / 1000).toFixed(1)} km`}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+              <p className="note">Modelled population (WorldPop 2020) and OpenStreetMap settlements, rounded.</p>
+            </div>
           )}
           {frame?.baseline && <p className="note">This pass is part of the dry, pre-spill baseline.</p>}
           {frame?.note && <p className="note">{frame.note}</p>}

@@ -32,6 +32,9 @@ def main(argv: list[str] | None = None) -> None:
     b = sub.add_parser("build", help="write web layers and story.json for the app")
     b.add_argument("story", choices=stories)
 
+    x = sub.add_parser("exposure", help="people in and near the flood water per pass (floods only)")
+    x.add_argument("story", choices=["floods"])
+
     c = sub.add_parser("coherence", help="fetch coherence windows from GUNW pairs (reads remotely, caches)")
     c.add_argument("story", choices=stories)
 
@@ -59,6 +62,10 @@ def main(argv: list[str] | None = None) -> None:
         from .quicklook import quicklook
 
         print(quicklook(args.story, args.before, args.after, args.pol))
+    elif args.cmd == "exposure":
+        from .exposure import build_exposure
+
+        print(build_exposure(args.story))
     elif args.cmd == "coherence":
         from .coherence import fetch
 

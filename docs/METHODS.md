@@ -92,6 +92,28 @@ of a flood.
 - The 27 October pass was made with a newer processing version (CRID P05036) and is about 2 dB darker
   across the whole scene, so we read it as "flood gone" with some caution.
 
+### Floods: people near the water
+
+For each pass after the spill, we count the people living on detected flood water and within 1 km of
+it, using WorldPop's 2020 population model (100 m, constrained to built-up areas) and OpenStreetMap
+settlements (`asaase exposure floods`).
+
+| Pass | Phase | People within 1 km | Settlements within 1 km |
+| --- | --- | --- | --- |
+| 28 Aug | spill begins | 2,100 | Licha, Sugtampia |
+| 9 Sep | rising | 2,400 | Kubagna, Nayeri, Sugtampia |
+| 21 Sep | **peak** | 3,400 | Kubori, Willi, Kuba |
+| 3 Oct | receding | 2,000 | Willi, Kuba |
+| 15 Oct | receding | 1,100 | none |
+| 27 Oct | back to baseline | 20 | none |
+
+- Almost no one lives on the flood water itself (about 30 people at most): the flooded vegetation sits
+  in uninhabited floodplain and farmland.
+- At the peak, about **3,400 people** in three settlements (Kubori, Willi and Kuba) live within 1 km.
+- These are modelled numbers, rounded, for the flood water we can detect. Our flood detection is strict
+  (see the threshold check), and narrow riverbank flooding under about 200 m is not detected, so the real
+  number of people affected is likely higher.
+
 ### Galamsey: a large, stable footprint
 
 - The mining-scar footprint is **141–175 km²** on every pass (150 km² on 24 June, 141 km² on
@@ -165,8 +187,7 @@ We therefore keep the HV footprint for detection and do not show coherence as a 
 - **Finer detail:** the 3 × 3 cleaning step at about 68 m pixels removes features narrower than about
   200 m, such as thin riverbank flooding.
 - **Longer history:** Sentinel-1 (C-band, 2017–2026) to show how fast the mining scars spread before NISAR.
-- **Context layers:** forest-reserve boundaries (WDPA), population (WorldPop) and settlements
-  (OpenStreetMap), to report damage per reserve and people near flood water.
+- **Forest reserves:** boundaries from WDPA, to report mining damage per reserve.
 
 ## Reproduce
 

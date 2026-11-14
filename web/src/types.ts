@@ -40,6 +40,31 @@ export interface StoryData {
   method?: Record<string, unknown>;
 }
 
+/** A settlement near flood water (web/public/data/floods/exposure.json). */
+export interface Community {
+  name: string;
+  lon: number;
+  lat: number;
+  kind: string;        // city | town | village | hamlet (OpenStreetMap)
+  distanceM: number;   // distance to the nearest flood water
+  people: number;      // modelled people within 1 km of the settlement point
+}
+
+export interface ExposureFrame {
+  peopleInside: number;
+  peopleWithin1km: number;
+  communitiesWithin1km: number;
+  communities: Community[];
+}
+
+/** People living in and near the detected flood water, per pass after the spill. */
+export interface Exposure {
+  source: string;
+  bufferM: number;
+  note?: string;
+  frames: Record<string, ExposureFrame>;
+}
+
 export interface Place {
   name: string;
   lon: number;
