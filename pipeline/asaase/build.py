@@ -24,7 +24,7 @@ from scipy.ndimage import shift as nd_shift
 from . import config
 from .export import Grid, save_classes, save_grey, save_pixel_series
 from .process import (
-    bounded_otsu,
+    clamped_otsu,
     clean,
     coregister,
     drift_offset,
@@ -91,7 +91,7 @@ def _forest(story, files, grid, out_dir) -> dict:
     base = load_db(files[dates[0]], story, grid, "HVHV")
     if base is None:
         raise SystemExit(f"First pass {dates[0]} does not cover the study area")
-    thr = bounded_otsu(base, -24, -13, config.DAMAGE_HV_MAX_DB)
+    thr = clamped_otsu(base, *config.DAMAGE_OTSU_RANGE_DB, config.DAMAGE_HV_MAX_DB)
     base_scars = clean(base < thr, config.MIN_PATCH_PX)
     intact = base > thr + 2           # clearly forested: the reference for drift correction
     print(f"  damage threshold HV < {thr:.1f} dB (from {dates[0]})")

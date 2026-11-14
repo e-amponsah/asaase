@@ -52,8 +52,8 @@ Areas are computed in true ground units, allowing for pixel size changing with l
 ### Galamsey: mining scars and new disturbance
 
 - **Mining-scar footprint:** land whose HV is below a threshold found automatically (Otsu's method) on
-  the first pass, kept between −24 and −13 dB. Intact canopy scatters strongly in HV; stripped ground
-  and flooded pits do not.
+  the first pass, capped at −15 dB. Intact canopy scatters strongly in HV; stripped ground and flooded
+  pits do not. The cap comes from the optical check below (Otsu alone gives −14.0 dB here).
 - **New disturbance:** HV fell by 3 dB or more since the first pass. Before comparing, we subtract the
   scene-wide seasonal drift, measured as the median HV change over clearly intact forest.
 
@@ -94,14 +94,46 @@ of a flood.
 
 ### Galamsey: a large, stable footprint
 
-- The mining-scar footprint is **200–237 km²** on every pass (205 km² on 24 June, 200 km² on
+- The mining-scar footprint is **141–175 km²** on every pass (150 km² on 24 June, 141 km² on
   22 October). It follows the branching scar network visible in optical imagery along the stream valleys.
+- About **4 km²** of it is one industrial site near 5.96°N, 1.92°W: an engineered tailings dam with a
+  decant pond and a processing plant. That is large-scale licensed-style mining, not galamsey, and we
+  will label it separately.
 - Pass-to-pass swings of about ±8% track soil and canopy moisture, not mining, so we read the footprint
   rather than its small changes.
-- New disturbance since the first pass grows to about **150–190 ha** by September and October, after
-  correcting a seasonal drift of up to −0.7 dB.
+- New disturbance since the first pass grows to about **210–240 ha** by September and October, after
+  correcting a seasonal drift of up to −0.65 dB.
 - Most of the damage predates NISAR's first pass, so four months show the footprint far more than its
   growth. Sentinel-1 (2017–2026) is planned to show the longer spread.
+
+### How we checked the thresholds
+
+**Galamsey.** We overlaid the HV footprint at −15, −14 and −13 dB on satellite imagery (Esri World
+Imagery) in five sample areas: the main Offin corridor, the dendritic south-west valleys, the eastern
+belt, the north-west forest edge and the industrial site.
+
+- **−15 dB** follows the tan, stripped scars visible in the imagery.
+- **−14 dB** widens them by about one pixel (68 m) at the edges and adds 35–40% to the area.
+- **−13 dB** adds scattered false hits in intact forest and in towns.
+
+We use −15 dB. The footprint changes by about 30% per decibel, so the threshold matters more than any
+other choice; it is fixed for all passes so that the time series stays comparable.
+
+**Floods.** We counted flooded vegetation on a dry pass (23 July, where any hit is a false alarm) and at
+the peak (21 September) for nine combinations of the HH rise (2, 3, 4 dB) and HH-over-HV margin
+(1, 1.5, 2 dB).
+
+| HH rise | Margin | Dry pass, 23 Jul (km²) | Peak, 21 Sep (km²) |
+| --- | --- | --- | --- |
+| 2 dB | 1.0 dB | 9.1 | 27.2 |
+| 2 dB | 1.5 dB | 3.4 | 17.7 |
+| **3 dB** | **1.5 dB** | **0.3** | **10.7** |
+| 3 dB | 2.0 dB | 0.1 | 7.0 |
+| 4 dB | 1.5 dB | 0.0 | 4.8 |
+
+Our setting (3 dB, 1.5 dB) keeps false alarms near zero while keeping most of the signal. Every one of
+the nine combinations peaks on 21 September, so the flood's timing does not depend on the thresholds;
+its area does (roughly 5–18 km² for sensible settings).
 
 ### Data quality
 
@@ -112,9 +144,8 @@ of a flood.
 
 ## What we are checking next
 
-- **Thresholds:** tuning against optical imagery and known mining sites. The footprint is an upper
-  estimate: it may include some naturally wet valley floors and one large site near 5.96°N, 1.92°W that
-  we have not yet identified as licensed or illegal.
+- **Naming the industrial site** near 5.96°N, 1.92°W from a public source, and showing it apart from
+  galamsey in the app.
 - **Finer detail:** the 3 × 3 cleaning step at about 68 m pixels removes features narrower than about
   200 m, such as thin riverbank flooding.
 - **Longer history:** Sentinel-1 (C-band, 2017–2026) to show how fast the mining scars spread before NISAR.

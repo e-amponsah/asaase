@@ -62,3 +62,13 @@ def test_coregister_leaves_aligned_images_alone():
     ref = gaussian_filter(rng.normal(0, 1, (64, 64)), 2)
     out, shift = coregister(ref, ref + 0.01)
     assert shift == (0.0, 0.0) and out is not ref
+
+
+def test_clamped_otsu_clamps_to_range():
+    from asaase.process import clamped_otsu, otsu_threshold
+    rng = np.random.default_rng(3)
+    values = np.concatenate([rng.normal(-17, 1, 5000), rng.normal(-5, 1, 5000)])
+    t = otsu_threshold(values)
+    assert t > -15                                        # Otsu alone lands above the cap...
+    assert clamped_otsu(values, -24, -15, -17) == -15     # ...so it is clamped to it
+    assert clamped_otsu(values, -24, 0, -17) == t         # inside the range: unchanged

@@ -50,6 +50,15 @@ def bounded_otsu(values: np.ndarray, lo: float, hi: float, fallback: float) -> f
     return t if lo < t < hi else fallback
 
 
+def clamped_otsu(values: np.ndarray, lo: float, hi: float, fallback: float) -> float:
+    """Otsu's threshold, clamped to [lo, hi]; the fallback is used only if Otsu cannot run."""
+    try:
+        t = otsu_threshold(values)
+    except ValueError:
+        return fallback
+    return float(min(max(t, lo), hi))
+
+
 def clean(mask: np.ndarray, min_px: int) -> np.ndarray:
     """Remove speckle: a 3x3 opening, then drop patches smaller than min_px pixels."""
     m = binary_opening(mask.astype(bool), structure=np.ones((3, 3)))

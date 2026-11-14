@@ -79,13 +79,22 @@ DB_RANGE = {"HHHH": (-25.0, 0.0), "HVHV": (-30.0, -8.0)}
 # ── Thresholds (dB). Starting points, tuned against optical imagery (see docs/METHODS.md). ──
 
 # Galamsey
-DAMAGE_HV_MAX_DB = -17.0      # fallback: HV below this = stripped / mined land (Otsu tried first)
+# Mining scars = HV below a threshold found by Otsu's method on the first pass, kept inside this range.
+# The upper limit of -15 dB comes from comparing the footprint with optical imagery in five sample
+# areas: -15 dB follows the visible scars; -14 dB widens them by a pixel; -13 dB adds false hits in
+# intact forest and towns. (Otsu alone gives -14.0 dB here, so the cap applies.)
+DAMAGE_OTSU_RANGE_DB = (-24.0, -15.0)
+DAMAGE_HV_MAX_DB = -17.0      # fallback if Otsu fails
 FOREST_LOSS_DROP_DB = 3.0     # HV fall vs. first date (after drift correction) = new disturbance
 
 # Floods (change from a dry, pre-spill baseline)
 FLOOD_BASELINE_BEFORE = "2026-08-20"   # passes before this form the baseline (Bagré spill ~28 Aug)
-FLOOD_RISE_DB = 3.0           # HH brightening that counts as flooded vegetation (double bounce)...
-FLOOD_HH_OVER_HV_DB = 1.5     # ...only if HH rose this much MORE than HV (rules out crop growth)
+# Flooded vegetation = HH rose by FLOOD_RISE_DB and by FLOOD_HH_OVER_HV_DB more than HV (double bounce
+# boosts HH far more than HV; wet soil and crops raise both). Checked on a dry pass (23 Jul) and the
+# peak (21 Sep): 3.0 / 1.5 gives 0.3 km² of false hits vs 10.7 km² at the peak (36:1). Looser settings
+# let in 3-9 km² of false hits; stricter ones cut the peak. Every setting peaks on 21 Sep.
+FLOOD_RISE_DB = 3.0
+FLOOD_HH_OVER_HV_DB = 1.5
 FLOOD_DROP_DB = 3.0           # HH darkening that counts as new open water...
 WATER_HH_MAX_DB = -18.0       # ...if also darker than this (fallback when Otsu fails)
 

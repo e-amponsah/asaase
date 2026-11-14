@@ -1,6 +1,6 @@
 {
   "story": "galamsey",
-  "generated": "2026-11-14T17:23:33+00:00",
+  "generated": "2026-11-14T17:36:31+00:00",
   "illustrative": false,
   "track": "A145/5+4",
   "bounds": [
@@ -19,7 +19,7 @@
       "coverage": 1.0,
       "version": "P05023",
       "stats": {
-        "damagedKm2": 205.1,
+        "damagedKm2": 149.52,
         "newDisturbanceHa": 0.0,
         "driftDb": 0.0,
         "shiftRows": 0.0,
@@ -34,9 +34,9 @@
       "coverage": 1.0,
       "version": "P05023",
       "stats": {
-        "damagedKm2": 209.22,
-        "newDisturbanceHa": 1.7,
-        "driftDb": -0.47,
+        "damagedKm2": 151.62,
+        "newDisturbanceHa": 4.8,
+        "driftDb": -0.41,
         "shiftRows": 0.0,
         "shiftCols": 0.0
       }
@@ -49,9 +49,9 @@
       "coverage": 1.0,
       "version": "P05023",
       "stats": {
-        "damagedKm2": 206.58,
-        "newDisturbanceHa": 9.1,
-        "driftDb": -0.51,
+        "damagedKm2": 149.62,
+        "newDisturbanceHa": 16.0,
+        "driftDb": -0.44,
         "shiftRows": 0.0,
         "shiftCols": 0.0
       }
@@ -64,9 +64,9 @@
       "coverage": 1.0,
       "version": "P05023",
       "stats": {
-        "damagedKm2": 223.45,
-        "newDisturbanceHa": 59.1,
-        "driftDb": -0.54,
+        "damagedKm2": 164.34,
+        "newDisturbanceHa": 80.6,
+        "driftDb": -0.47,
         "shiftRows": 0.0,
         "shiftCols": 0.0
       }
@@ -79,9 +79,9 @@
       "coverage": 1.0,
       "version": "P05023",
       "stats": {
-        "damagedKm2": 223.55,
-        "newDisturbanceHa": 85.0,
-        "driftDb": -0.59,
+        "damagedKm2": 163.79,
+        "newDisturbanceHa": 113.7,
+        "driftDb": -0.51,
         "shiftRows": 0.0,
         "shiftCols": 0.0
       }
@@ -94,9 +94,9 @@
       "coverage": 1.0,
       "version": "P05023",
       "stats": {
-        "damagedKm2": 236.86,
-        "newDisturbanceHa": 148.1,
-        "driftDb": -0.72,
+        "damagedKm2": 174.81,
+        "newDisturbanceHa": 191.6,
+        "driftDb": -0.65,
         "shiftRows": 0.0,
         "shiftCols": 0.0
       }
@@ -109,9 +109,9 @@
       "coverage": 1.0,
       "version": "P05023",
       "stats": {
-        "damagedKm2": 231.44,
-        "newDisturbanceHa": 190.3,
-        "driftDb": -0.56,
+        "damagedKm2": 169.88,
+        "newDisturbanceHa": 239.2,
+        "driftDb": -0.48,
         "shiftRows": 0.0,
         "shiftCols": 0.0
       }
@@ -124,9 +124,9 @@
       "coverage": 0.997,
       "version": "P05023",
       "stats": {
-        "damagedKm2": 246.55,
-        "newDisturbanceHa": 610.0,
-        "driftDb": -0.72,
+        "damagedKm2": 181.84,
+        "newDisturbanceHa": 759.6,
+        "driftDb": -0.6,
         "shiftRows": -3.6,
         "shiftCols": -0.77
       },
@@ -140,9 +140,9 @@
       "coverage": 1.0,
       "version": "P05023",
       "stats": {
-        "damagedKm2": 218.42,
-        "newDisturbanceHa": 170.4,
-        "driftDb": -0.31,
+        "damagedKm2": 159.15,
+        "newDisturbanceHa": 222.9,
+        "driftDb": -0.22,
         "shiftRows": 0.0,
         "shiftCols": 0.0
       }
@@ -155,9 +155,9 @@
       "coverage": 1.0,
       "version": "P05036",
       "stats": {
-        "damagedKm2": 200.07,
-        "newDisturbanceHa": 161.7,
-        "driftDb": 0.01,
+        "damagedKm2": 141.26,
+        "newDisturbanceHa": 209.0,
+        "driftDb": 0.12,
         "shiftRows": 0.0,
         "shiftCols": 0.0
       }
@@ -169,39 +169,39 @@
     "points": [
       {
         "date": "2026-06-24",
-        "value": 205.1
+        "value": 149.52
       },
       {
         "date": "2026-07-06",
-        "value": 209.22
+        "value": 151.62
       },
       {
         "date": "2026-07-18",
-        "value": 206.58
+        "value": 149.62
       },
       {
         "date": "2026-08-11",
-        "value": 223.45
+        "value": 164.34
       },
       {
         "date": "2026-08-23",
-        "value": 223.55
+        "value": 163.79
       },
       {
         "date": "2026-09-04",
-        "value": 236.86
+        "value": 174.81
       },
       {
         "date": "2026-09-16",
-        "value": 231.44
+        "value": 169.88
       },
       {
         "date": "2026-10-10",
-        "value": 218.42
+        "value": 159.15
       },
       {
         "date": "2026-10-22",
-        "value": 200.07
+        "value": 141.26
       }
     ]
   },
@@ -216,41 +216,41 @@
         },
         {
           "date": "2026-07-06",
-          "value": 1.7
+          "value": 4.8
         },
         {
           "date": "2026-07-18",
-          "value": 9.1
+          "value": 16.0
         },
         {
           "date": "2026-08-11",
-          "value": 59.1
+          "value": 80.6
         },
         {
           "date": "2026-08-23",
-          "value": 85.0
+          "value": 113.7
         },
         {
           "date": "2026-09-04",
-          "value": 148.1
+          "value": 191.6
         },
         {
           "date": "2026-09-16",
-          "value": 190.3
+          "value": 239.2
         },
         {
           "date": "2026-10-10",
-          "value": 170.4
+          "value": 222.9
         },
         {
           "date": "2026-10-22",
-          "value": 161.7
+          "value": 209.0
         }
       ]
     }
   ],
   "method": {
-    "damageThresholdDb": -13.96,
+    "damageThresholdDb": -15.0,
     "newDisturbanceDropDb": 3.0,
     "driftCorrection": "median HV change over intact forest, subtracted per pass",
     "coregistration": "each pass aligned to the first by phase correlation if offset \u2265 0.3 px",

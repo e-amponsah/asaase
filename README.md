@@ -18,7 +18,7 @@ NISAR's L-band radar sends its own signal and sees through cloud, day and night,
 
 | Story | Where | What the radar shows |
 | --- | --- | --- |
-| **Where the forest went** | Offin River, Upper Denkyira East (galamsey belt) | Mining scars: stripped ground and pits are dark in HV radar, where intact forest is bright. About 200–237 km² on every pass, June to October 2026 |
+| **Where the forest went** | Offin River, Upper Denkyira East (galamsey belt) | Mining scars: stripped ground and pits are dark in HV radar, where intact forest is bright. About 141–175 km² on every pass, June to October 2026 |
 | **The Volta breathes** | White Volta, Pwalugu to Daboya | The flood from the late-August 2026 Bagré Dam spill: water under vegetation rises to 10.7 km² on 21 Sep and is gone by late October |
 
 Plus **How radar sees**, a plain-language explainer of mirror, canopy and double-bounce scattering.
