@@ -46,6 +46,7 @@ export function MapControls(p: Props) {
           )}
           <Toggle on={p.showChange} onChange={p.onShowChange} swatch={p.changeSwatch} label={p.changeLabel} />
         </div>
+        <p className="ctrl-hint">Click the map to see a spot's history</p>
       </div>
 
       <div className="ctrl ctrl-right">

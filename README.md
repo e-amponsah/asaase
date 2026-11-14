@@ -29,7 +29,8 @@ In the app you can:
 - **swipe** between two dates to compare them side by side;
 - switch between the radar and satellite photos to check what the radar found;
 - read the area affected on each pass in a chart, or **listen** to it as a rhythm;
-- see **how many people live near the flood water** on each pass, and which settlements.
+- see **how many people live near the flood water** on each pass, and which settlements;
+- **click any spot** to see its radar history over every pass, with a plain-language reading.
 
 Real NISAR data, no server: the app is a static site that loads fast on mobile data.
 

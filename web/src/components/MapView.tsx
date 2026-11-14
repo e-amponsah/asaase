@@ -11,6 +11,8 @@ interface Props {
   storyKey: string;
   places: Place[];
   communities?: Community[];
+  spot?: { lon: number; lat: number } | null;
+  onSpot?: (lon: number, lat: number) => void;
   frame?: Frame;
   compareFrame?: Frame;
   date: string;
@@ -96,7 +98,7 @@ function placeMarker(p: Place) {
 }
 
 export function MapView(props: Props) {
-  const { bounds, storyKey, places, communities = [], frame, compareFrame, date, compareDate, basemap, showBase, showFootprint, showChange, hasData } = props;
+  const { bounds, storyKey, places, communities = [], spot = null, onSpot, frame, compareFrame, date, compareDate, basemap, showBase, showFootprint, showChange, hasData } = props;
   const mainEl = useRef<HTMLDivElement>(null);
   const cmpEl = useRef<HTMLDivElement>(null);
   const maps = useRef<{ main: MLMap; cmp: MLMap } | null>(null);
@@ -150,6 +152,30 @@ export function MapView(props: Props) {
     return () => markers.forEach((mk) => mk.remove());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loaded, storyKey]);
+
+  // Click anywhere for that spot's history. Both maps listen: in swipe mode the left side is the
+  // compare map. The latest handler is kept in a ref so the listeners are attached once.
+  const spotHandler = useRef(onSpot);
+  spotHandler.current = onSpot;
+  useEffect(() => {
+    if (!loaded || !maps.current) return;
+    const { main, cmp } = maps.current;
+    const onClick = (e: maplibregl.MapMouseEvent) => spotHandler.current?.(e.lngLat.lng, e.lngLat.lat);
+    main.on("click", onClick);
+    cmp.on("click", onClick);
+    main.getCanvas().style.cursor = "crosshair";
+    cmp.getCanvas().style.cursor = "crosshair";
+    return () => { main.off("click", onClick); cmp.off("click", onClick); };
+  }, [loaded]);
+
+  // Pin on the clicked spot (main map only).
+  useEffect(() => {
+    if (!loaded || !maps.current || !spot) return;
+    const el = document.createElement("div");
+    el.className = "spot-pin";
+    const mk = new maplibregl.Marker({ element: el }).setLngLat([spot.lon, spot.lat]).addTo(maps.current.main);
+    return () => { mk.remove(); };
+  }, [loaded, spot]);
 
   // Settlements near flood water on the current pass (main map only).
   const communityKey = communities.map((c) => c.name).join("|");

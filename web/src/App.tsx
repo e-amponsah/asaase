@@ -2,12 +2,14 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { LearnView } from "./components/LearnView";
 import { MapControls } from "./components/MapControls";
 import { MapView, type Basemap } from "./components/MapView";
+import { SpotHistory } from "./components/SpotHistory";
 import { StoryPanel } from "./components/StoryPanel";
 import { Timeline } from "./components/Timeline";
 import { TopBar } from "./components/TopBar";
 import { STORIES } from "./content/stories";
 import { shortDate } from "./lib/format";
 import { playSeries } from "./lib/sonify";
+import { usePixels } from "./lib/usePixels";
 import { useStoryData } from "./lib/useStoryData";
 import type { StoryId, View } from "./types";
 
@@ -21,6 +23,9 @@ export default function App() {
   const [storyId, setStoryId] = useState<StoryId>(view === "floods" ? "floods" : "galamsey");
   const story = STORIES[storyId];
   const { data, exposure } = useStoryData(story);
+  const pixels = usePixels(story.id);
+  const [spot, setSpot] = useState<{ lon: number; lat: number } | null>(null);
+  const onSpot = useCallback((lon: number, lat: number) => setSpot({ lon, lat }), []);
 
   const dates = useMemo(
     () => (data.frames.length ? data.frames.map((f) => f.date) : story.dates),
@@ -62,6 +67,7 @@ export default function App() {
     setIndex(dates.length - 1);
     setCompareIndex(null);
     setPlaying(false);
+    setSpot(null);
     stopAudio.current?.();
   }, [storyId, dates.length]);
 
@@ -148,6 +154,8 @@ export default function App() {
               storyKey={story.id}
               places={story.places}
               communities={showChange ? people?.communities ?? [] : []}
+              spot={spot}
+              onSpot={pixels ? onSpot : undefined}
               frame={frame}
               compareFrame={compareFrame}
               date={date}
@@ -178,6 +186,20 @@ export default function App() {
               changeSwatch={story.changeSwatch ?? story.changeColor}
               formatDate={shortDate}
             />
+            {spot && pixels && (
+              <SpotHistory
+                story={story.id}
+                grid={pixels}
+                lon={spot.lon}
+                lat={spot.lat}
+                currentDate={date}
+                frames={data.frames}
+                scarThresholdDb={typeof data.method?.damageThresholdDb === "number" ? data.method.damageThresholdDb : undefined}
+                color={story.id === "floods" ? "#8fb4ff" : "#d99a3e"}
+                onPick={pickDate}
+                onClose={() => setSpot(null)}
+              />
+            )}
             <Timeline
               dates={dates}
               index={at}
