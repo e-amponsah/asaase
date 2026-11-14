@@ -31,6 +31,7 @@ export default function App() {
   const [basemap, setBasemap] = useState<Basemap>("dark");
   const [showBase, setShowBase] = useState(true);
   const [showChange, setShowChange] = useState(true);
+  const [showFootprint, setShowFootprint] = useState(true);
   const [playing, setPlaying] = useState(false);
   const [listening, setListening] = useState(false);
   const stopAudio = useRef<(() => void) | null>(null);
@@ -114,9 +115,13 @@ export default function App() {
     if (i >= 0) setIndex(i);
   };
 
-  const date = dates[Math.min(index, dates.length - 1)];
+  // The date list can shrink (placeholder dates → real passes) before the reset effect runs,
+  // so clamp both indexes for this render.
+  const at = Math.min(index, dates.length - 1);
+  const cmpAt = compareIndex !== null && compareIndex < dates.length ? compareIndex : null;
+  const date = dates[at];
   const frame = data.frames.find((f) => f.date === date);
-  const compareDate = compareIndex !== null ? dates[compareIndex] : null;
+  const compareDate = cmpAt !== null ? dates[cmpAt] : null;
   const compareFrame = compareDate ? data.frames.find((f) => f.date === compareDate) : undefined;
 
   return (
@@ -129,6 +134,7 @@ export default function App() {
           <StoryPanel
             story={story}
             data={data}
+            frame={frame}
             currentDate={date}
             onPickDate={pickDate}
             listening={listening}
@@ -145,11 +151,12 @@ export default function App() {
               compareDate={compareDate}
               basemap={basemap}
               showBase={showBase}
+              showFootprint={showFootprint}
               showChange={showChange}
               hasData={data.frames.length > 0}
             />
             <MapControls
-              comparing={compareIndex !== null}
+              comparing={cmpAt !== null}
               onCompare={(on) => setCompareIndex(on ? 0 : null)}
               compareOptions={dates}
               compareDate={compareDate}
@@ -160,19 +167,22 @@ export default function App() {
               onShowBase={setShowBase}
               showChange={showChange}
               onShowChange={setShowChange}
+              showFootprint={showFootprint}
+              onShowFootprint={setShowFootprint}
+              footprint={story.footprint}
               baseLabel={story.basePolLabel}
               changeLabel={story.changeLabel}
-              changeColor={story.changeColor}
+              changeSwatch={story.changeSwatch ?? story.changeColor}
               formatDate={shortDate}
             />
             <Timeline
               dates={dates}
-              index={index}
+              index={at}
               onIndex={(i) => { setPlaying(false); setIndex(i); }}
               events={story.events}
               playing={playing}
               onTogglePlay={togglePlay}
-              compareIndex={compareIndex}
+              compareIndex={cmpAt}
             />
           </section>
         </main>

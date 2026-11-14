@@ -19,12 +19,15 @@ def main(argv: list[str] | None = None) -> None:
     d = sub.add_parser("download", help="download scenes (needs Earthdata login)")
     d.add_argument("story", choices=stories)
     d.add_argument("--dates", nargs="*", help="only these YYYY-MM-DD dates")
-    d.add_argument("--main-track-only", action="store_true")
+    d.add_argument("--main-track-only", action="store_true",
+                   help="only the frames used for the time series (skip cross-check tracks)")
 
     q = sub.add_parser("quicklook", help="before/after/difference PNG for the go/no-go check")
     q.add_argument("story", choices=stories)
     q.add_argument("--before")
     q.add_argument("--after")
+    q.add_argument("--pol", choices=["HH", "HV", "hh", "hv"],
+                   help="polarization (default HV for galamsey, HH for floods)")
 
     b = sub.add_parser("build", help="write web layers and story.json for the app")
     b.add_argument("story", choices=stories)
@@ -38,7 +41,7 @@ def main(argv: list[str] | None = None) -> None:
         scenes = find_scenes(story, dual_pol_only=not getattr(args, "all_pols", False))
         if args.cmd == "download":
             if args.main_track_only:
-                scenes = [x for x in scenes if x.track == story.tracks[0]]
+                scenes = [x for x in scenes if x.track in story.main]
             if args.dates:
                 scenes = [x for x in scenes if x.date in set(args.dates)]
             from .download import download
@@ -52,7 +55,7 @@ def main(argv: list[str] | None = None) -> None:
     elif args.cmd == "quicklook":
         from .quicklook import quicklook
 
-        print(quicklook(args.story, args.before, args.after))
+        print(quicklook(args.story, args.before, args.after, args.pol))
     elif args.cmd == "build":
         from .build import build_story
 

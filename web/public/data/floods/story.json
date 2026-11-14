@@ -1,0 +1,59 @@
+{
+  "story": "floods",
+  "generated": "2026-11-14T14:36:27+00:00",
+  "illustrative": false,
+  "track": "A44/7+6",
+  "bounds": [
+    -1.5,
+    9.45,
+    -0.75,
+    10.7
+  ],
+  "basePolarization": "HH",
+  "frames": [
+    {
+      "date": "2026-08-16",
+      "base": "data/floods/2026-08-16_base.png",
+      "change": "data/floods/2026-08-16_change.png",
+      "coverage": 1.0,
+      "baseline": true,
+      "stats": {
+        "openWaterKm2": 0.0,
+        "floodedVegetationKm2": 0.0
+      }
+    },
+    {
+      "date": "2026-09-09",
+      "base": "data/floods/2026-09-09_base.png",
+      "change": "data/floods/2026-09-09_change.png",
+      "coverage": 1.0,
+      "baseline": false,
+      "stats": {
+        "openWaterKm2": 0.46,
+        "floodedVegetationKm2": 9.34
+      }
+    }
+  ],
+  "series": {
+    "label": "Flooded area",
+    "unit": "km\u00b2",
+    "points": [
+      {
+        "date": "2026-08-16",
+        "value": 0.0
+      },
+      {
+        "date": "2026-09-09",
+        "value": 9.8
+      }
+    ]
+  },
+  "method": {
+    "baselineDates": [
+      "2026-08-16"
+    ],
+    "openWater": "HH fell \u2265 3.0 dB and HH < -18.0 dB",
+    "floodedVegetation": "HH rose \u2265 3.0 dB and \u2265 1.5 dB more than HV",
+    "minPatchPx": 4
+  }
+}

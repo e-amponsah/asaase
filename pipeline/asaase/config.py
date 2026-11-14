@@ -1,6 +1,6 @@
 """Study areas, NISAR tracks and paths. One place to change what we process.
 
-Tracks and dates were checked against the ASF archive on 2026-11-14 (see docs/DATA_PLAN.md).
+Tracks and dates were checked against the ASF archive on 2026-11-14 (see docs/METHODS.md).
 """
 
 from __future__ import annotations
@@ -29,10 +29,20 @@ class Story:
     id: str
     title: str
     bbox: tuple[float, float, float, float]  # west, south, east, north (lon/lat)
-    tracks: tuple[Track, ...]                # first track is the main time series
+    main: tuple[Track, ...]                  # frames of ONE pass, mosaicked into the time series
     start: str
     end: str
+    extra: tuple[Track, ...] = ()            # other tracks, for cross-checks only
     max_px: int = 2048                       # longest side of exported web images
+
+    @property
+    def tracks(self) -> tuple[Track, ...]:
+        return self.main + self.extra
+
+    def main_label(self) -> str:
+        t = self.main[0]
+        frames = "+".join(str(m.frame) for m in self.main)
+        return f"{t.direction}{t.path}/{frames}"
 
 
 STORIES: dict[str, Story] = {
@@ -40,7 +50,8 @@ STORIES: dict[str, Story] = {
         id="galamsey",
         title="Where the forest went",
         bbox=(-2.10, 5.85, -1.70, 6.15),     # Upper Denkyera East / Offin River corridor
-        tracks=(Track("A", 145, 5), Track("D", 8, 86)),
+        main=(Track("A", 145, 5), Track("A", 145, 4)),   # frame 5 north, frame 4 south
+        extra=(Track("D", 8, 86),),
         start="2026-06-15",
         end="2026-10-31",
     ),
@@ -48,7 +59,7 @@ STORIES: dict[str, Story] = {
         id="atewa",
         title="Atewa watershed",
         bbox=(-0.68, 6.08, -0.47, 6.35),
-        tracks=(Track("A", 44, 5),),
+        main=(Track("A", 44, 5),),
         start="2026-06-15",
         end="2026-10-31",
     ),
@@ -56,9 +67,7 @@ STORIES: dict[str, Story] = {
         id="floods",
         title="The Volta breathes",
         bbox=(-1.50, 9.45, -0.75, 10.70),    # White Volta, Pwalugu down to Daboya
-        # Frames 7 (north) and 6 (south) together cover the area. build.py uses frame 7 only
-        # until the mosaic task (D4 in docs/TASKS.md) is done.
-        tracks=(Track("A", 44, 7), Track("A", 44, 6)),
+        main=(Track("A", 44, 7), Track("A", 44, 6)),     # frame 7 north, frame 6 south
         start="2026-06-15",
         end="2026-10-31",
     ),
@@ -67,6 +76,18 @@ STORIES: dict[str, Story] = {
 # Display ranges in dB for the greyscale backscatter images.
 DB_RANGE = {"HHHH": (-25.0, 0.0), "HVHV": (-30.0, -8.0)}
 
-# Thresholds (dB). Starting points only: tune them on real scenes (task D3 in docs/TASKS.md).
-FOREST_LOSS_DROP_DB = 3.0     # HV fall vs. first date that counts as disturbance
-WATER_HH_MAX_DB = -18.0       # fallback if Otsu fails
+# ── Thresholds (dB). Starting points, tuned against optical imagery (see docs/METHODS.md). ──
+
+# Galamsey
+DAMAGE_HV_MAX_DB = -17.0      # fallback: HV below this = stripped / mined land (Otsu tried first)
+FOREST_LOSS_DROP_DB = 3.0     # HV fall vs. first date (after drift correction) = new disturbance
+
+# Floods (change from a dry, pre-spill baseline)
+FLOOD_BASELINE_BEFORE = "2026-08-20"   # passes before this form the baseline (Bagré spill ~28 Aug)
+FLOOD_RISE_DB = 3.0           # HH brightening that counts as flooded vegetation (double bounce)...
+FLOOD_HH_OVER_HV_DB = 1.5     # ...only if HH rose this much MORE than HV (rules out crop growth)
+FLOOD_DROP_DB = 3.0           # HH darkening that counts as new open water...
+WATER_HH_MAX_DB = -18.0       # ...if also darker than this (fallback when Otsu fails)
+
+# Minimum patch size kept in masks, in pixels of the story grid (removes speckle).
+MIN_PATCH_PX = 4

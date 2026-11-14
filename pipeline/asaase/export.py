@@ -26,7 +26,7 @@ class Grid:
     height: int
 
     @classmethod
-    def for_bbox(cls, bbox: tuple[float, float, float, float], max_px: int) -> "Grid":
+    def for_bbox(cls, bbox: tuple[float, float, float, float], max_px: int) -> Grid:
         w, s, e, n = bbox
         ground_w = (e - w) * math.cos(math.radians((s + n) / 2))
         ground_h = n - s
@@ -84,6 +84,16 @@ def save_mask(mask: np.ndarray, path: Path, rgb: tuple[int, int, int], opacity: 
     m = mask.astype(bool)
     rgba = np.zeros((*m.shape, 4), dtype="uint8")
     rgba[m] = (*rgb, opacity)
+    _save_rgba(rgba, path)
+
+
+def save_classes(layers: list[tuple[np.ndarray, tuple[int, int, int]]], path: Path,
+                 opacity: int = 225) -> None:
+    """Several masks in one overlay, each in its own colour. Later layers paint on top."""
+    h, w = layers[0][0].shape
+    rgba = np.zeros((h, w, 4), dtype="uint8")
+    for mask, rgb in layers:
+        rgba[mask.astype(bool)] = (*rgb, opacity)
     _save_rgba(rgba, path)
 
 

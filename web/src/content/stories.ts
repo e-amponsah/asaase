@@ -15,20 +15,23 @@ export const STORIES: Record<StoryId, StoryContent> = {
     lede:
       "Illegal gold mining is cutting into Ghana's forest reserves and turning rivers brown. " +
       "In the rainy season, cloud hides it from optical satellites. NISAR's L-band radar " +
-      "sees through the cloud and into the canopy, pass after pass.",
+      "sees through the cloud and maps the scars: stripped river banks and mined stream " +
+      "valleys, pass after pass.",
     bounds: [-2.1, 5.85, -1.7, 6.15],
-    track: "Ascending 145 · frame 5",
+    track: "Ascending 145 · frames 4–5",
     dates: [
       "2026-06-24", "2026-07-06", "2026-07-18", "2026-08-11", "2026-08-23",
       "2026-09-04", "2026-09-16", "2026-09-28", "2026-10-10", "2026-10-22",
     ],
     basePolLabel: "HV backscatter",
-    changeLabel: "Canopy disturbance",
+    changeLabel: "New disturbance",
     changeColor: "#f05a3c",
+    footprint: { label: "Mining scars", color: "#d99a3e" },
     readingTheRadar: [
       { swatch: "#d9dedc", label: "Bright", text: "Intact forest. Leaves and branches scatter the radar back in many directions (volume scattering)." },
-      { swatch: "#4a5250", label: "Dark", text: "Bare, dug-up ground or water-filled pits. Little energy comes back." },
-      { swatch: "#f05a3c", label: "Ember", text: "Pixels whose HV signal fell by 3 dB or more since the first pass: likely canopy loss." },
+      { swatch: "#4a5250", label: "Dark", text: "Bare, dug-up ground or water-filled pits. Little energy comes back. Galamsey follows streams, so the scars branch like the river network." },
+      { swatch: "#d99a3e", label: "Amber", text: "Mining scars: all land dark enough in HV to be stripped or mined on that date. Matches the brown scars in optical imagery." },
+      { swatch: "#f05a3c", label: "Ember", text: "New disturbance: HV fell by 3 dB or more since the first pass, after correcting for scene-wide seasonal drift." },
     ],
     stats: [
       { value: "≈ 8,900 ha", label: "of forest reserve degraded by illegal mining by end-2024 (Forestry Commission)" },
@@ -38,19 +41,19 @@ export const STORIES: Record<StoryId, StoryContent> = {
     events: [],
     places: [{ name: "Dunkwa-on-Offin", lon: -1.78, lat: 5.96 }],
     illustrativeSeries: {
-      label: "Canopy disturbance",
-      unit: "ha",
+      label: "Damaged land",
+      unit: "km²",
       points: [
-        { date: "2026-06-24", value: 0 },
-        { date: "2026-07-06", value: 34 },
-        { date: "2026-07-18", value: 71 },
-        { date: "2026-08-11", value: 118 },
-        { date: "2026-08-23", value: 152 },
-        { date: "2026-09-04", value: 189 },
-        { date: "2026-09-16", value: 233 },
-        { date: "2026-09-28", value: 262 },
-        { date: "2026-10-10", value: 301 },
-        { date: "2026-10-22", value: 342 },
+        { date: "2026-06-24", value: 38 },
+        { date: "2026-07-06", value: 38.4 },
+        { date: "2026-07-18", value: 38.9 },
+        { date: "2026-08-11", value: 39.5 },
+        { date: "2026-08-23", value: 39.8 },
+        { date: "2026-09-04", value: 40.3 },
+        { date: "2026-09-16", value: 40.6 },
+        { date: "2026-09-28", value: 41.1 },
+        { date: "2026-10-10", value: 41.4 },
+        { date: "2026-10-22", value: 41.9 },
       ],
     },
     sources: [
@@ -76,12 +79,14 @@ export const STORIES: Record<StoryId, StoryContent> = {
       "2026-09-09", "2026-09-21", "2026-10-03", "2026-10-15", "2026-10-27",
     ],
     basePolLabel: "HH backscatter",
-    changeLabel: "Open water",
-    changeColor: "#38aaff",
+    changeLabel: "Flood water",
+    changeColor: "#8fb4ff",
+    changeSwatch: "linear-gradient(135deg, #38aaff 50%, #b48cff 50%)",
     readingTheRadar: [
       { swatch: "#1b201f", label: "Black", text: "Open water. Smooth water reflects the radar away like a mirror, so almost nothing comes back." },
-      { swatch: "#d9dedc", label: "Bright", text: "Flooded trees and buildings. The signal bounces off the water, then the trunk or wall, and straight back (double bounce)." },
-      { swatch: "#38aaff", label: "Blue", text: "Pixels classified as open water on that date." },
+      { swatch: "#d9dedc", label: "Bright", text: "Flooded vegetation can turn bright: the pulse bounces off the water, then off stems and trunks, and straight back (double bounce). Wet soil and growing crops brighten too, so we check both radar channels." },
+      { swatch: "#38aaff", label: "Blue", text: "New open water: HH darkened sharply compared with the dry, pre-spill baseline." },
+      { swatch: "#b48cff", label: "Violet", text: "Flooded vegetation: HH brightened sharply and far more than HV. Growing crops or wet soil brighten both channels together, so they are left out." },
     ],
     stats: [
       { value: "28 Aug", label: "2026: Bagré Dam spill begins, NADMO advises riverside evacuation" },
@@ -94,7 +99,7 @@ export const STORIES: Record<StoryId, StoryContent> = {
       { name: "Daboya", lon: -1.42, lat: 9.53 },
     ],
     illustrativeSeries: {
-      label: "Open water",
+      label: "Flooded area",
       unit: "km²",
       points: [
         { date: "2026-06-17", value: 41 },

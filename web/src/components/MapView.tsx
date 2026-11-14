@@ -16,6 +16,7 @@ interface Props {
   compareDate: string | null;
   basemap: Basemap;
   showBase: boolean;
+  showFootprint: boolean;
   showChange: boolean;
   hasData: boolean;
 }
@@ -56,10 +57,18 @@ function aoiFeature(b: Bounds): GeoJSON.FeatureCollection {
   };
 }
 
-function setImages(map: MLMap, frame: Frame | undefined, bounds: Bounds, showBase: boolean, showChange: boolean) {
+interface Visible {
+  base: boolean;
+  footprint: boolean;
+  change: boolean;
+}
+
+function setImages(map: MLMap, frame: Frame | undefined, bounds: Bounds, show: Visible) {
+  // Bottom to top: backscatter, mining scars, change. Each is inserted below the AOI outline.
   const layers: [string, string | undefined, boolean, number][] = [
-    ["radar-base", frame?.base, showBase, 0.95],
-    ["radar-change", frame?.change, showChange, 1],
+    ["radar-base", frame?.base, show.base, 0.95],
+    ["radar-footprint", frame?.footprint, show.footprint, 1],
+    ["radar-change", frame?.change, show.change, 1],
   ];
   for (const [id, url, show, opacity] of layers) {
     if (!url) {
@@ -86,7 +95,7 @@ function placeMarker(p: Place) {
 }
 
 export function MapView(props: Props) {
-  const { bounds, storyKey, places, frame, compareFrame, date, compareDate, basemap, showBase, showChange, hasData } = props;
+  const { bounds, storyKey, places, frame, compareFrame, date, compareDate, basemap, showBase, showFootprint, showChange, hasData } = props;
   const mainEl = useRef<HTMLDivElement>(null);
   const cmpEl = useRef<HTMLDivElement>(null);
   const maps = useRef<{ main: MLMap; cmp: MLMap } | null>(null);
@@ -151,9 +160,10 @@ export function MapView(props: Props) {
 
   useEffect(() => {
     if (!loaded || !maps.current) return;
-    setImages(maps.current.main, frame, bounds, showBase, showChange);
-    setImages(maps.current.cmp, compareFrame, bounds, showBase, showChange);
-  }, [loaded, frame, compareFrame, bounds, showBase, showChange]);
+    const show = { base: showBase, footprint: showFootprint, change: showChange };
+    setImages(maps.current.main, frame, bounds, show);
+    setImages(maps.current.cmp, compareFrame, bounds, show);
+  }, [loaded, frame, compareFrame, bounds, showBase, showFootprint, showChange]);
 
   useEffect(() => {
     if (comparing) maps.current?.cmp.resize();

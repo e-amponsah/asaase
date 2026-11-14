@@ -16,8 +16,12 @@ export interface Series {
 /** One radar acquisition, as written by the pipeline (asaase build <story>). */
 export interface Frame {
   date: string;
-  base: string;   // greyscale backscatter PNG
-  change: string; // disturbance or water overlay PNG
+  base: string;       // greyscale backscatter PNG
+  change: string;     // galamsey: new disturbance · floods: open water + flooded vegetation
+  footprint?: string; // galamsey: all mining scars on that date
+  coverage?: number;  // share of the study area the radar covered (0–1)
+  baseline?: boolean; // floods: this pass is part of the dry baseline
+  stats?: Record<string, number>;
 }
 
 /** web/public/data/<story>/story.json */
@@ -30,6 +34,8 @@ export interface StoryData {
   basePolarization: string;
   frames: Frame[];
   series: Series;
+  extraSeries?: Series[];
+  method?: Record<string, unknown>;
 }
 
 export interface Place {
@@ -71,7 +77,9 @@ export interface StoryContent {
   dates: string[];
   basePolLabel: string;
   changeLabel: string;
-  changeColor: string;
+  changeColor: string;  // chart colour, and the toggle swatch unless changeSwatch is set
+  changeSwatch?: string;
+  footprint?: { label: string; color: string };
   readingTheRadar: { swatch: string; label: string; text: string }[];
   stats: Stat[];
   events: TimelineEvent[];

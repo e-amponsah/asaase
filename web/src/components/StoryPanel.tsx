@@ -1,16 +1,26 @@
-import type { StoryContent, StoryData } from "../types";
+import { formatValue } from "../lib/format";
+import type { Frame, StoryContent, StoryData } from "../types";
 import { SeriesChart } from "./SeriesChart";
+
+/** Per-pass numbers from the pipeline worth showing under the chart. */
+const BREAKDOWN: Record<string, { label: string; unit: string; color: string }> = {
+  openWaterKm2: { label: "New open water", unit: "km²", color: "#38aaff" },
+  floodedVegetationKm2: { label: "Flooded vegetation", unit: "km²", color: "#b48cff" },
+  newDisturbanceHa: { label: "New since first pass", unit: "ha", color: "#f05a3c" },
+};
 
 interface Props {
   story: StoryContent;
   data: StoryData;
+  frame?: Frame;
   currentDate: string;
   onPickDate: (d: string) => void;
   listening: boolean;
   onListen: () => void;
 }
 
-export function StoryPanel({ story, data, currentDate, onPickDate, listening, onListen }: Props) {
+export function StoryPanel({ story, data, frame, currentDate, onPickDate, listening, onListen }: Props) {
+  const breakdown = Object.entries(frame?.stats ?? {}).filter(([k]) => k in BREAKDOWN);
   return (
     <aside className="panel" aria-label={story.title}>
       <div className="panel-scroll">
@@ -43,6 +53,21 @@ export function StoryPanel({ story, data, currentDate, onPickDate, listening, on
             color={story.changeColor}
             onPick={onPickDate}
           />
+          {breakdown.length > 0 && (
+            <ul className="breakdown">
+              {breakdown.map(([k, v]) => (
+                <li key={k}>
+                  <span className="legend-swatch" style={{ background: BREAKDOWN[k].color }} />
+                  {BREAKDOWN[k].label}
+                  <strong>{formatValue(v, BREAKDOWN[k].unit)}</strong>
+                </li>
+              ))}
+            </ul>
+          )}
+          {frame?.baseline && <p className="note">This pass is part of the dry, pre-spill baseline.</p>}
+          {frame?.coverage !== undefined && frame.coverage < 0.9 && (
+            <p className="note">Radar covered {Math.round(frame.coverage * 100)}% of the study area on this pass.</p>
+          )}
           <button className={`listen ${listening ? "is-on" : ""}`} onClick={onListen}>
             <span className="listen-icon" aria-hidden="true">
               {listening ? (

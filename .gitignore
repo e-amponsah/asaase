@@ -20,8 +20,11 @@ _netrc
 .env.*
 
 # local tooling
-.claude/settings.local.json
+.claude/
 .vscode/
 .idea/
 .DS_Store
 Thumbs.db
+
+# team-only planning, briefs and presentations (shared privately, never pushed)
+internal/

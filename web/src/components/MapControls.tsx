@@ -12,9 +12,12 @@ interface Props {
   onShowBase: (v: boolean) => void;
   showChange: boolean;
   onShowChange: (v: boolean) => void;
+  showFootprint: boolean;
+  onShowFootprint: (v: boolean) => void;
+  footprint?: { label: string; color: string };
   baseLabel: string;
   changeLabel: string;
-  changeColor: string;
+  changeSwatch: string;
   formatDate: (d: string) => string;
 }
 
@@ -38,7 +41,10 @@ export function MapControls(p: Props) {
         )}
         <div className="toggles">
           <Toggle on={p.showBase} onChange={p.onShowBase} swatch="linear-gradient(90deg,#1b201f,#d9dedc)" label={p.baseLabel} />
-          <Toggle on={p.showChange} onChange={p.onShowChange} swatch={p.changeColor} label={p.changeLabel} />
+          {p.footprint && (
+            <Toggle on={p.showFootprint} onChange={p.onShowFootprint} swatch={p.footprint.color} label={p.footprint.label} />
+          )}
+          <Toggle on={p.showChange} onChange={p.onShowChange} swatch={p.changeSwatch} label={p.changeLabel} />
         </div>
       </div>
 

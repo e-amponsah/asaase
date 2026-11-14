@@ -1,0 +1,75 @@
+{
+  "story": "galamsey",
+  "generated": "2026-11-14T14:37:34+00:00",
+  "illustrative": false,
+  "track": "A145/5+4",
+  "bounds": [
+    -2.1,
+    5.85,
+    -1.7,
+    6.15
+  ],
+  "basePolarization": "HV",
+  "frames": [
+    {
+      "date": "2026-06-24",
+      "base": "data/galamsey/2026-06-24_base.png",
+      "footprint": "data/galamsey/2026-06-24_footprint.png",
+      "change": "data/galamsey/2026-06-24_change.png",
+      "coverage": 1.0,
+      "stats": {
+        "damagedKm2": 205.1,
+        "newDisturbanceHa": 0.0,
+        "driftDb": 0.0
+      }
+    },
+    {
+      "date": "2026-10-10",
+      "base": "data/galamsey/2026-10-10_base.png",
+      "footprint": "data/galamsey/2026-10-10_footprint.png",
+      "change": "data/galamsey/2026-10-10_change.png",
+      "coverage": 1.0,
+      "stats": {
+        "damagedKm2": 218.42,
+        "newDisturbanceHa": 170.4,
+        "driftDb": -0.31
+      }
+    }
+  ],
+  "series": {
+    "label": "Damaged land",
+    "unit": "km\u00b2",
+    "points": [
+      {
+        "date": "2026-06-24",
+        "value": 205.1
+      },
+      {
+        "date": "2026-10-10",
+        "value": 218.42
+      }
+    ]
+  },
+  "extraSeries": [
+    {
+      "label": "New disturbance since first pass",
+      "unit": "ha",
+      "points": [
+        {
+          "date": "2026-06-24",
+          "value": 0.0
+        },
+        {
+          "date": "2026-10-10",
+          "value": 170.4
+        }
+      ]
+    }
+  ],
+  "method": {
+    "damageThresholdDb": -13.96,
+    "newDisturbanceDropDb": 3.0,
+    "driftCorrection": "median HV change over intact forest, subtracted per pass",
+    "minPatchPx": 4
+  }
+}
