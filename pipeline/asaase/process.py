@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import numpy as np
 from scipy.ndimage import binary_opening, label, uniform_filter
+from scipy.ndimage import shift as nd_shift
 
 
 def to_db(power: np.ndarray) -> np.ndarray:
@@ -99,3 +100,42 @@ def flood_classes(hh: np.ndarray, hv: np.ndarray, hh_base: np.ndarray, hv_base: 
     open_water = ok & (dhh <= -drop_db) & (hh < water_thr)
     flooded_veg = ok & (dhh >= rise_db) & ((dhh - dhv) >= hh_over_hv_db)
     return open_water, flooded_veg
+
+
+def estimate_shift(ref_db: np.ndarray, img_db: np.ndarray) -> tuple[float, float]:
+    """Sub-pixel (rows, cols) offset that moves img onto ref, by phase correlation.
+
+    Gaps are filled with the image median so they do not dominate the correlation.
+    """
+    a = np.where(np.isfinite(ref_db), ref_db, np.nanmedian(ref_db))
+    b = np.where(np.isfinite(img_db), img_db, np.nanmedian(img_db))
+    win = np.outer(np.hanning(a.shape[0]), np.hanning(a.shape[1]))  # no wrap-around edge
+    a, b = (a - a.mean()) * win, (b - b.mean()) * win
+    cross = np.fft.fft2(a) * np.conj(np.fft.fft2(b))
+    r = np.fft.ifft2(cross / (np.abs(cross) + 1e-12)).real
+    h, w = r.shape
+    i, j = np.unravel_index(int(r.argmax()), r.shape)
+
+    def refine(m: float, c: float, p: float) -> float:
+        d = m - 2 * c + p
+        return 0.0 if d == 0 else 0.5 * (m - p) / d
+
+    di = refine(r[(i - 1) % h, j], r[i, j], r[(i + 1) % h, j])
+    dj = refine(r[i, (j - 1) % w], r[i, j], r[i, (j + 1) % w])
+    i = i - h if i > h // 2 else i
+    j = j - w if j > w // 2 else j
+    return float(i + di), float(j + dj)
+
+
+def coregister(ref_db: np.ndarray, img_db: np.ndarray, *, min_px: float = 0.3,
+               max_px: float = 20.0) -> tuple[np.ndarray, tuple[float, float]]:
+    """Align one pass to the reference pass if it is offset (e.g. a product's geolocation error).
+
+    Shifts below min_px are left alone (resampling would only blur); shifts above max_px are
+    treated as a failed match and ignored. Returns the aligned image and the shift applied.
+    """
+    dy, dx = estimate_shift(ref_db, img_db)
+    if np.hypot(dy, dx) < min_px or np.hypot(dy, dx) > max_px:
+        return img_db, (0.0, 0.0)
+    out = nd_shift(img_db, (dy, dx), order=1, mode="constant", cval=np.nan)
+    return out, (round(dy, 2), round(dx, 2))

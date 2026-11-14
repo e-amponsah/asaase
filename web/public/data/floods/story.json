@@ -1,6 +1,6 @@
 {
   "story": "floods",
-  "generated": "2026-11-14T14:36:27+00:00",
+  "generated": "2026-11-14T17:22:10+00:00",
   "illustrative": false,
   "track": "A44/7+6",
   "bounds": [
@@ -12,25 +12,143 @@
   "basePolarization": "HH",
   "frames": [
     {
-      "date": "2026-08-16",
-      "base": "data/floods/2026-08-16_base.png",
-      "change": "data/floods/2026-08-16_change.png",
+      "date": "2026-06-29",
+      "base": "data/floods/2026-06-29_base.webp",
+      "change": "data/floods/2026-06-29_change.png",
       "coverage": 1.0,
+      "version": "P05023",
       "baseline": true,
       "stats": {
-        "openWaterKm2": 0.0,
-        "floodedVegetationKm2": 0.0
+        "openWaterKm2": 0.16,
+        "floodedVegetationKm2": 0.56,
+        "shiftRows": 0.0,
+        "shiftCols": 0.0
+      }
+    },
+    {
+      "date": "2026-07-11",
+      "base": "data/floods/2026-07-11_base.webp",
+      "change": "data/floods/2026-07-11_change.png",
+      "coverage": 1.0,
+      "version": "P05023",
+      "baseline": true,
+      "stats": {
+        "openWaterKm2": 0.17,
+        "floodedVegetationKm2": 0.33,
+        "shiftRows": 0.0,
+        "shiftCols": 0.0
+      }
+    },
+    {
+      "date": "2026-07-23",
+      "base": "data/floods/2026-07-23_base.webp",
+      "change": "data/floods/2026-07-23_change.png",
+      "coverage": 1.0,
+      "version": "P05023",
+      "baseline": true,
+      "stats": {
+        "openWaterKm2": 0.93,
+        "floodedVegetationKm2": 0.35,
+        "shiftRows": 0.0,
+        "shiftCols": 0.0
+      }
+    },
+    {
+      "date": "2026-08-16",
+      "base": "data/floods/2026-08-16_base.webp",
+      "change": "data/floods/2026-08-16_change.png",
+      "coverage": 1.0,
+      "version": "P05023",
+      "baseline": true,
+      "stats": {
+        "openWaterKm2": 0.56,
+        "floodedVegetationKm2": 0.97,
+        "shiftRows": 0.0,
+        "shiftCols": 0.0
+      }
+    },
+    {
+      "date": "2026-08-28",
+      "base": "data/floods/2026-08-28_base.webp",
+      "change": "data/floods/2026-08-28_change.png",
+      "coverage": 1.0,
+      "version": "P05023",
+      "baseline": false,
+      "stats": {
+        "openWaterKm2": 0.26,
+        "floodedVegetationKm2": 3.24,
+        "shiftRows": 0.0,
+        "shiftCols": 0.0
       }
     },
     {
       "date": "2026-09-09",
-      "base": "data/floods/2026-09-09_base.png",
+      "base": "data/floods/2026-09-09_base.webp",
       "change": "data/floods/2026-09-09_change.png",
       "coverage": 1.0,
+      "version": "P05023",
       "baseline": false,
       "stats": {
-        "openWaterKm2": 0.46,
-        "floodedVegetationKm2": 9.34
+        "openWaterKm2": 0.44,
+        "floodedVegetationKm2": 6.28,
+        "shiftRows": 0.0,
+        "shiftCols": 0.0
+      }
+    },
+    {
+      "date": "2026-09-21",
+      "base": "data/floods/2026-09-21_base.webp",
+      "change": "data/floods/2026-09-21_change.png",
+      "coverage": 1.0,
+      "version": "P05023",
+      "baseline": false,
+      "stats": {
+        "openWaterKm2": 1.29,
+        "floodedVegetationKm2": 10.65,
+        "shiftRows": 0.0,
+        "shiftCols": 0.0
+      }
+    },
+    {
+      "date": "2026-10-03",
+      "base": "data/floods/2026-10-03_base.webp",
+      "change": "data/floods/2026-10-03_change.png",
+      "coverage": 1.0,
+      "version": "P05023",
+      "baseline": false,
+      "stats": {
+        "openWaterKm2": 0.84,
+        "floodedVegetationKm2": 7.55,
+        "shiftRows": 0.0,
+        "shiftCols": 0.0
+      }
+    },
+    {
+      "date": "2026-10-15",
+      "base": "data/floods/2026-10-15_base.webp",
+      "change": "data/floods/2026-10-15_change.png",
+      "coverage": 1.0,
+      "version": "P05023",
+      "baseline": false,
+      "stats": {
+        "openWaterKm2": 0.53,
+        "floodedVegetationKm2": 1.45,
+        "shiftRows": 0.0,
+        "shiftCols": 0.0
+      }
+    },
+    {
+      "date": "2026-10-27",
+      "base": "data/floods/2026-10-27_base.webp",
+      "change": "data/floods/2026-10-27_change.png",
+      "coverage": 1.0,
+      "version": "P05036",
+      "baseline": false,
+      "stats": {
+        "openWaterKm2": 0.06,
+        "floodedVegetationKm2": 0.0,
+        "shiftRows": 0.0,
+        "shiftCols": 0.0
       }
     }
   ],
@@ -39,17 +157,52 @@
     "unit": "km\u00b2",
     "points": [
       {
+        "date": "2026-06-29",
+        "value": 0.71
+      },
+      {
+        "date": "2026-07-11",
+        "value": 0.5
+      },
+      {
+        "date": "2026-07-23",
+        "value": 1.28
+      },
+      {
         "date": "2026-08-16",
-        "value": 0.0
+        "value": 1.53
+      },
+      {
+        "date": "2026-08-28",
+        "value": 3.5
       },
       {
         "date": "2026-09-09",
-        "value": 9.8
+        "value": 6.73
+      },
+      {
+        "date": "2026-09-21",
+        "value": 11.94
+      },
+      {
+        "date": "2026-10-03",
+        "value": 8.4
+      },
+      {
+        "date": "2026-10-15",
+        "value": 1.97
+      },
+      {
+        "date": "2026-10-27",
+        "value": 0.06
       }
     ]
   },
   "method": {
     "baselineDates": [
+      "2026-06-29",
+      "2026-07-11",
+      "2026-07-23",
       "2026-08-16"
     ],
     "openWater": "HH fell \u2265 3.0 dB and HH < -18.0 dB",

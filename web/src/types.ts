@@ -21,6 +21,8 @@ export interface Frame {
   footprint?: string; // galamsey: all mining scars on that date
   coverage?: number;  // share of the study area the radar covered (0–1)
   baseline?: boolean; // floods: this pass is part of the dry baseline
+  version?: string;   // NISAR processing version (CRID), e.g. P05023
+  note?: string;      // data-quality note; flagged passes are left out of the chart
   stats?: Record<string, number>;
 }
 

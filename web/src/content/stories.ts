@@ -75,7 +75,7 @@ export const STORIES: Record<StoryId, StoryContent> = {
     bounds: [-1.5, 9.45, -0.75, 10.7],
     track: "Ascending 44 · frames 6–7",
     dates: [
-      "2026-06-17", "2026-06-29", "2026-07-11", "2026-07-23", "2026-08-16", "2026-08-28",
+      "2026-06-29", "2026-07-11", "2026-07-23", "2026-08-16", "2026-08-28",
       "2026-09-09", "2026-09-21", "2026-10-03", "2026-10-15", "2026-10-27",
     ],
     basePolLabel: "HH backscatter",
@@ -90,10 +90,13 @@ export const STORIES: Record<StoryId, StoryContent> = {
     ],
     stats: [
       { value: "28 Aug", label: "2026: Bagré Dam spill begins, NADMO advises riverside evacuation" },
-      { value: "11", label: "NISAR passes on one track, mid-June to late October" },
+      { value: "10", label: "dual-polarized NISAR passes on one track, late June to late October" },
       { value: "12 days", label: "between repeat passes over the same ground" },
     ],
-    events: [{ date: "2026-08-28", label: "Bagré spill begins" }],
+    events: [
+      { date: "2026-08-28", label: "Bagré spill begins" },
+      { date: "2026-09-21", label: "Flood peak" },
+    ],
     places: [
       { name: "Pwalugu", lon: -0.84, lat: 10.6 },
       { name: "Daboya", lon: -1.42, lat: 9.53 },
@@ -102,7 +105,6 @@ export const STORIES: Record<StoryId, StoryContent> = {
       label: "Flooded area",
       unit: "km²",
       points: [
-        { date: "2026-06-17", value: 41 },
         { date: "2026-06-29", value: 44 },
         { date: "2026-07-11", value: 49 },
         { date: "2026-07-23", value: 56 },

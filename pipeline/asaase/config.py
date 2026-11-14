@@ -91,3 +91,11 @@ WATER_HH_MAX_DB = -18.0       # ...if also darker than this (fallback when Otsu 
 
 # Minimum patch size kept in masks, in pixels of the story grid (removes speckle).
 MIN_PATCH_PX = 4
+
+# Passes we show on the map but leave out of the charts, with the reason shown in the app.
+QUALITY_FLAGS: dict[str, dict[str, str]] = {
+    "galamsey": {
+        "2026-09-28": ("This pass came with a geolocation error of about 80 m. We realigned it, but "
+                       "steep slopes still show false change, so it is left out of the chart."),
+    },
+}

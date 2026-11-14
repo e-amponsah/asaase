@@ -1,6 +1,6 @@
 {
   "story": "galamsey",
-  "generated": "2026-11-14T14:37:34+00:00",
+  "generated": "2026-11-14T17:23:33+00:00",
   "illustrative": false,
   "track": "A145/5+4",
   "bounds": [
@@ -13,26 +13,153 @@
   "frames": [
     {
       "date": "2026-06-24",
-      "base": "data/galamsey/2026-06-24_base.png",
+      "base": "data/galamsey/2026-06-24_base.webp",
       "footprint": "data/galamsey/2026-06-24_footprint.png",
       "change": "data/galamsey/2026-06-24_change.png",
       "coverage": 1.0,
+      "version": "P05023",
       "stats": {
         "damagedKm2": 205.1,
         "newDisturbanceHa": 0.0,
-        "driftDb": 0.0
+        "driftDb": 0.0,
+        "shiftRows": 0.0,
+        "shiftCols": 0.0
       }
     },
     {
+      "date": "2026-07-06",
+      "base": "data/galamsey/2026-07-06_base.webp",
+      "footprint": "data/galamsey/2026-07-06_footprint.png",
+      "change": "data/galamsey/2026-07-06_change.png",
+      "coverage": 1.0,
+      "version": "P05023",
+      "stats": {
+        "damagedKm2": 209.22,
+        "newDisturbanceHa": 1.7,
+        "driftDb": -0.47,
+        "shiftRows": 0.0,
+        "shiftCols": 0.0
+      }
+    },
+    {
+      "date": "2026-07-18",
+      "base": "data/galamsey/2026-07-18_base.webp",
+      "footprint": "data/galamsey/2026-07-18_footprint.png",
+      "change": "data/galamsey/2026-07-18_change.png",
+      "coverage": 1.0,
+      "version": "P05023",
+      "stats": {
+        "damagedKm2": 206.58,
+        "newDisturbanceHa": 9.1,
+        "driftDb": -0.51,
+        "shiftRows": 0.0,
+        "shiftCols": 0.0
+      }
+    },
+    {
+      "date": "2026-08-11",
+      "base": "data/galamsey/2026-08-11_base.webp",
+      "footprint": "data/galamsey/2026-08-11_footprint.png",
+      "change": "data/galamsey/2026-08-11_change.png",
+      "coverage": 1.0,
+      "version": "P05023",
+      "stats": {
+        "damagedKm2": 223.45,
+        "newDisturbanceHa": 59.1,
+        "driftDb": -0.54,
+        "shiftRows": 0.0,
+        "shiftCols": 0.0
+      }
+    },
+    {
+      "date": "2026-08-23",
+      "base": "data/galamsey/2026-08-23_base.webp",
+      "footprint": "data/galamsey/2026-08-23_footprint.png",
+      "change": "data/galamsey/2026-08-23_change.png",
+      "coverage": 1.0,
+      "version": "P05023",
+      "stats": {
+        "damagedKm2": 223.55,
+        "newDisturbanceHa": 85.0,
+        "driftDb": -0.59,
+        "shiftRows": 0.0,
+        "shiftCols": 0.0
+      }
+    },
+    {
+      "date": "2026-09-04",
+      "base": "data/galamsey/2026-09-04_base.webp",
+      "footprint": "data/galamsey/2026-09-04_footprint.png",
+      "change": "data/galamsey/2026-09-04_change.png",
+      "coverage": 1.0,
+      "version": "P05023",
+      "stats": {
+        "damagedKm2": 236.86,
+        "newDisturbanceHa": 148.1,
+        "driftDb": -0.72,
+        "shiftRows": 0.0,
+        "shiftCols": 0.0
+      }
+    },
+    {
+      "date": "2026-09-16",
+      "base": "data/galamsey/2026-09-16_base.webp",
+      "footprint": "data/galamsey/2026-09-16_footprint.png",
+      "change": "data/galamsey/2026-09-16_change.png",
+      "coverage": 1.0,
+      "version": "P05023",
+      "stats": {
+        "damagedKm2": 231.44,
+        "newDisturbanceHa": 190.3,
+        "driftDb": -0.56,
+        "shiftRows": 0.0,
+        "shiftCols": 0.0
+      }
+    },
+    {
+      "date": "2026-09-28",
+      "base": "data/galamsey/2026-09-28_base.webp",
+      "footprint": "data/galamsey/2026-09-28_footprint.png",
+      "change": "data/galamsey/2026-09-28_change.png",
+      "coverage": 0.997,
+      "version": "P05023",
+      "stats": {
+        "damagedKm2": 246.55,
+        "newDisturbanceHa": 610.0,
+        "driftDb": -0.72,
+        "shiftRows": -3.6,
+        "shiftCols": -0.77
+      },
+      "note": "This pass came with a geolocation error of about 80 m. We realigned it, but steep slopes still show false change, so it is left out of the chart."
+    },
+    {
       "date": "2026-10-10",
-      "base": "data/galamsey/2026-10-10_base.png",
+      "base": "data/galamsey/2026-10-10_base.webp",
       "footprint": "data/galamsey/2026-10-10_footprint.png",
       "change": "data/galamsey/2026-10-10_change.png",
       "coverage": 1.0,
+      "version": "P05023",
       "stats": {
         "damagedKm2": 218.42,
         "newDisturbanceHa": 170.4,
-        "driftDb": -0.31
+        "driftDb": -0.31,
+        "shiftRows": 0.0,
+        "shiftCols": 0.0
+      }
+    },
+    {
+      "date": "2026-10-22",
+      "base": "data/galamsey/2026-10-22_base.webp",
+      "footprint": "data/galamsey/2026-10-22_footprint.png",
+      "change": "data/galamsey/2026-10-22_change.png",
+      "coverage": 1.0,
+      "version": "P05036",
+      "stats": {
+        "damagedKm2": 200.07,
+        "newDisturbanceHa": 161.7,
+        "driftDb": 0.01,
+        "shiftRows": 0.0,
+        "shiftCols": 0.0
       }
     }
   ],
@@ -45,8 +172,36 @@
         "value": 205.1
       },
       {
+        "date": "2026-07-06",
+        "value": 209.22
+      },
+      {
+        "date": "2026-07-18",
+        "value": 206.58
+      },
+      {
+        "date": "2026-08-11",
+        "value": 223.45
+      },
+      {
+        "date": "2026-08-23",
+        "value": 223.55
+      },
+      {
+        "date": "2026-09-04",
+        "value": 236.86
+      },
+      {
+        "date": "2026-09-16",
+        "value": 231.44
+      },
+      {
         "date": "2026-10-10",
         "value": 218.42
+      },
+      {
+        "date": "2026-10-22",
+        "value": 200.07
       }
     ]
   },
@@ -60,8 +215,36 @@
           "value": 0.0
         },
         {
+          "date": "2026-07-06",
+          "value": 1.7
+        },
+        {
+          "date": "2026-07-18",
+          "value": 9.1
+        },
+        {
+          "date": "2026-08-11",
+          "value": 59.1
+        },
+        {
+          "date": "2026-08-23",
+          "value": 85.0
+        },
+        {
+          "date": "2026-09-04",
+          "value": 148.1
+        },
+        {
+          "date": "2026-09-16",
+          "value": 190.3
+        },
+        {
           "date": "2026-10-10",
           "value": 170.4
+        },
+        {
+          "date": "2026-10-22",
+          "value": 161.7
         }
       ]
     }
@@ -70,6 +253,7 @@
     "damageThresholdDb": -13.96,
     "newDisturbanceDropDb": 3.0,
     "driftCorrection": "median HV change over intact forest, subtracted per pass",
+    "coregistration": "each pass aligned to the first by phase correlation if offset \u2265 0.3 px",
     "minPatchPx": 4
   }
 }

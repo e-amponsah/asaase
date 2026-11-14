@@ -65,6 +65,7 @@ export function StoryPanel({ story, data, frame, currentDate, onPickDate, listen
             </ul>
           )}
           {frame?.baseline && <p className="note">This pass is part of the dry, pre-spill baseline.</p>}
+          {frame?.note && <p className="note">{frame.note}</p>}
           {frame?.coverage !== undefined && frame.coverage < 0.9 && (
             <p className="note">Radar covered {Math.round(frame.coverage * 100)}% of the study area on this pass.</p>
           )}

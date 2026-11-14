@@ -97,6 +97,57 @@ def save_classes(layers: list[tuple[np.ndarray, tuple[int, int, int]]], path: Pa
     _save_rgba(rgba, path)
 
 
+WEBP_QUALITY = 72  # backscatter images: about 10x smaller than PNG, no visible loss at map scale
+
+
 def _save_rgba(rgba: np.ndarray, path: Path) -> None:
+    """PNG (lossless) for the small class overlays; lossy WebP for photographic backscatter."""
     path.parent.mkdir(parents=True, exist_ok=True)
-    Image.fromarray(rgba, "RGBA").save(path, optimize=True)
+    img = Image.fromarray(rgba, "RGBA")
+    if path.suffix == ".webp":
+        img.save(path, "WEBP", quality=WEBP_QUALITY, method=6)
+    else:
+        img.save(path, optimize=True)
+
+
+def save_pixel_series(stack: list[np.ndarray], dates: list[str], bbox, pol: str,
+                      out_dir: Path, story_id: str, max_side: int = 256) -> dict:
+    """Coarse per-pixel dB history for 'click a spot' charts.
+
+    Writes pixels.bin (int16 little-endian, [date][row][col], row 0 = north, dB x 10,
+    -32768 = no data) and returns the pixels.json header.
+    """
+    h, w = stack[0].shape
+    f = max(1, math.ceil(max(h, w) / max_side))
+    hh, ww = h // f, w // f
+    out = np.full((len(stack), hh, ww), -32768, dtype="<i2")
+    for i, db in enumerate(stack):
+        blocks = db[: hh * f, : ww * f].reshape(hh, f, ww, f)
+        with np.errstate(invalid="ignore"), _warnings_off():
+            mean = np.nanmean(blocks, axis=(1, 3))
+        ok = np.isfinite(mean)
+        out[i][ok] = np.clip(np.round(mean[ok] * 10), -32767, 32767).astype("<i2")
+    (out_dir / "pixels.bin").write_bytes(out.tobytes())
+    # Cropping to whole blocks trims a sliver at the south and east edges; report the true bounds.
+    west, south, east, north = bbox
+    east_c = west + (east - west) * (ww * f) / w
+    south_c = north - (north - south) * (hh * f) / h
+    header = {
+        "bounds": [west, round(south_c, 6), round(east_c, 6), north],
+        "width": ww, "height": hh, "dates": dates, "pol": pol,
+        "scale": 0.1, "nodata": -32768, "file": f"data/{story_id}/pixels.bin",
+    }
+    import json
+    (out_dir / "pixels.json").write_text(json.dumps(header, indent=2), encoding="utf-8")
+    return header
+
+
+class _warnings_off:
+    def __enter__(self):
+        import warnings
+        self._c = warnings.catch_warnings()
+        self._c.__enter__()
+        warnings.simplefilter("ignore", RuntimeWarning)
+
+    def __exit__(self, *exc):
+        return self._c.__exit__(*exc)

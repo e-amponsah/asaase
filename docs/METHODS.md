@@ -22,9 +22,10 @@ NISAR measures two polarizations, and they respond to different things:
 | Story | Area (W, S, E, N) | NISAR track and frames | Passes (2026) |
 | --- | --- | --- | --- |
 | **Where the forest went** (galamsey) | −2.10, 5.85, −1.70, 6.15: Offin River, Upper Denkyira East | Ascending path 145, frames 4 + 5, HH + HV | 10: 24 Jun → 22 Oct |
-| **The Volta breathes** (floods) | −1.50, 9.45, −0.75, 10.70: White Volta, Pwalugu to Daboya | Ascending path 44, frames 6 + 7, HH + HV | 11: 17 Jun → 27 Oct |
+| **The Volta breathes** (floods) | −1.50, 9.45, −0.75, 10.70: White Volta, Pwalugu to Daboya | Ascending path 44, frames 6 + 7, HH + HV | 10: 29 Jun → 27 Oct |
 
 - NISAR has a permanent data gap from 27 July to 10 August 2026.
+- We use dual-polarized (HH + HV) passes only. The 17 June flood pass exists as HH only, so it is left out.
 - Passes from 21 October onward were made with a newer processing version (CRID P05036 instead of
   P05023). Comparing passes made with the same version avoids small false shifts, so we
   prefer like-for-like pairs.
@@ -41,9 +42,10 @@ For every pass, `asaase build <story>` (in `pipeline/`):
 2. **Filters speckle** with a Lee filter and converts to decibels.
 3. **Resamples** onto one fixed lon/lat grid per story (EPSG:4326), so every date lines up pixel for pixel.
 4. **Mosaics** the two frames of each pass, so the whole study area is covered.
-5. **Detects** change (below), cleans masks with a 3 × 3 opening and drops patches under 4 pixels.
-6. **Exports** transparent PNG overlays and a `story.json` with dates, areas and method settings. The web
-   app is fully static: no server.
+5. **Aligns** each pass to the first by phase correlation and corrects any offset of 0.3 pixels or more.
+6. **Detects** change (below), cleans masks with a 3 × 3 opening and drops patches under 4 pixels.
+7. **Exports** WebP backscatter images, transparent PNG overlays, a `story.json` with dates, areas and
+   method settings, and a coarse per-pixel time series. The web app is fully static: no server.
 
 Areas are computed in true ground units, allowing for pixel size changing with latitude.
 
@@ -63,32 +65,56 @@ Areas are computed in true ground units, allowing for pixel size changing with l
   vegetation reflects the pulse off the water and then off stems (double bounce), which boosts HH far more
   than HV. Wet soil and growing crops raise both channels together, so they are excluded.
 
-## Results so far (first two passes per story)
+## Results (all passes, June–October 2026)
 
-**Galamsey (24 Jun vs 10 Oct).**
-- The mining-scar footprint covers **205 km²** on 24 June and **218 km²** on 10 October (threshold
-  HV < −14.0 dB).
-- It closely follows the branching scar network visible in optical imagery along the stream valleys.
-- New disturbance between the two dates is **170 ha**, after a −0.31 dB drift correction.
-- Most of the damage predates NISAR's first pass, so the four-month record shows the footprint far more
-  than its growth.
+### Floods: the spill shows up as a rise and fall
 
-**Floods (16 Aug vs 9 Sep).**
-- After the spill, the river corridors and nearby fields brightened strongly in HH (+3 to +6 dB over
-  about 192 km²).
-- HV brightened by the **same** amount (median +3.7 dB in both channels). That pattern fits wetter soil
-  and vegetation at least as well as flooding under vegetation.
-- So only **9.3 km²** passes the strict flooded-vegetation test, and new open water is **0.5 km²**.
-- We describe the corridor as a **wetting signal** until the time series shows the rise and fall
-  expected of a flood.
+Water under vegetation (HH rising by 3 dB or more **and** by at least 1.5 dB more than HV) went from
+about 1 km² before the spill to a peak of **10.7 km² on 21 September**, three weeks after the Bagré Dam
+began spilling, and was gone by late October. A rise and fall timed with the spill is what we expected
+of a flood.
+
+| Pass | Phase | Flooded vegetation (km²) | New open water (km²) |
+| --- | --- | --- | --- |
+| 29 Jun, 11 Jul, 23 Jul, 16 Aug | dry baseline | 0.3–1.0 | 0.2–0.9 |
+| 28 Aug | spill begins | 3.2 | 0.3 |
+| 9 Sep | rising | 6.3 | 0.4 |
+| **21 Sep** | **peak** | **10.7** | **1.3** |
+| 3 Oct | receding | 7.6 | 0.8 |
+| 15 Oct | receding | 1.4 | 0.5 |
+| 27 Oct | back to baseline | 0.0 | 0.1 |
+
+- Most flood water sits under vegetation along the north-western tributaries, not as open water: new
+  open water never exceeds 1.3 km².
+- A broader brightening along the rivers (HH alone up by 3 dB or more) keeps growing into mid-October.
+  It rises in HV as well, so it fits wet soil and growing crops late in the rainy season, and we do not
+  count it as flood.
+- The 27 October pass was made with a newer processing version (CRID P05036) and is about 2 dB darker
+  across the whole scene, so we read it as "flood gone" with some caution.
+
+### Galamsey: a large, stable footprint
+
+- The mining-scar footprint is **200–237 km²** on every pass (205 km² on 24 June, 200 km² on
+  22 October). It follows the branching scar network visible in optical imagery along the stream valleys.
+- Pass-to-pass swings of about ±8% track soil and canopy moisture, not mining, so we read the footprint
+  rather than its small changes.
+- New disturbance since the first pass grows to about **150–190 ha** by September and October, after
+  correcting a seasonal drift of up to −0.7 dB.
+- Most of the damage predates NISAR's first pass, so four months show the footprint far more than its
+  growth. Sentinel-1 (2017–2026) is planned to show the longer spread.
+
+### Data quality
+
+- **28 September (galamsey)** came with a geolocation error of about 80 m (3.6 pixels). The
+  co-registration step realigns it, but its terrain correction was computed with the same error, so steep
+  slopes still show false change. The pass stays on the map with a note and is left out of the charts.
+- Every other pass on both tracks lines up within 0.05 pixels, and both frame mosaics show no seams.
 
 ## What we are checking next
 
-- **All passes:** a flood should peak around 21 September and recede through October; wetting from
-  rain and crops should not.
-- **Thresholds:** tuning against optical imagery and known mining sites. The 218 km² footprint is an
-  upper estimate: it may include some naturally wet valley floors and one large site near 5.96°N,
-  1.92°W that we have not yet identified as licensed or illegal.
+- **Thresholds:** tuning against optical imagery and known mining sites. The footprint is an upper
+  estimate: it may include some naturally wet valley floors and one large site near 5.96°N, 1.92°W that
+  we have not yet identified as licensed or illegal.
 - **Finer detail:** the 3 × 3 cleaning step at about 68 m pixels removes features narrower than about
   200 m, such as thin riverbank flooding.
 - **Longer history:** Sentinel-1 (C-band, 2017–2026) to show how fast the mining scars spread before NISAR.

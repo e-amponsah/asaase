@@ -1,7 +1,9 @@
 import numpy as np
+from scipy.ndimage import gaussian_filter
+from scipy.ndimage import shift as nd_shift
 
 from asaase.config import STORIES
-from asaase.process import clean, drift_offset, flood_classes
+from asaase.process import clean, coregister, drift_offset, flood_classes
 
 
 def test_drift_offset_ignores_local_change():
@@ -43,3 +45,20 @@ def test_clean_drops_speckle_keeps_patches():
 def test_main_frames_are_one_pass():
     for s in STORIES.values():
         assert len({(t.direction, t.path) for t in s.main}) == 1
+
+
+def test_coregister_recovers_a_subpixel_offset():
+    rng = np.random.default_rng(1)
+    ref = gaussian_filter(rng.normal(0, 1, (128, 128)), 2) * 10 - 12
+    moved = nd_shift(ref, (-3.6, 0.7), order=1, mode="nearest")   # like a geolocation error
+    aligned, (dy, dx) = coregister(ref, moved)
+    assert abs(dy - 3.6) < 0.25 and abs(dx + 0.7) < 0.25
+    inner = (slice(10, -10), slice(10, -10))
+    assert np.nanmean(np.abs(aligned[inner] - ref[inner])) < np.mean(np.abs(moved[inner] - ref[inner])) / 3
+
+
+def test_coregister_leaves_aligned_images_alone():
+    rng = np.random.default_rng(2)
+    ref = gaussian_filter(rng.normal(0, 1, (64, 64)), 2)
+    out, shift = coregister(ref, ref + 0.01)
+    assert shift == (0.0, 0.0) and out is not ref
