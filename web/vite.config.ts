@@ -1,7 +1,7 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
-// base "./" so the build works on GitHub Pages under any repo name.
+// base "./" so the build works at a domain root or under any sub-path.
 export default defineConfig({
   base: "./",
   plugins: [react()],

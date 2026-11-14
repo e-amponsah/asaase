@@ -49,7 +49,7 @@ The method, study areas, tracks, results so far and what we are still checking a
 
 ```
 asaase/
-├── web/        React + TypeScript + MapLibre app (static; deploys to GitHub Pages)
+├── web/        React + TypeScript + MapLibre app (static; live at asaase.earth on Cloudflare Pages)
 │   └── public/data/<story>/   processed radar layers and story.json, written by the pipeline
 ├── pipeline/   Python: find, download and process NISAR GCOV into web layers
 ├── data/       Local downloads and intermediates (git-ignored; raw files are several GB each)
