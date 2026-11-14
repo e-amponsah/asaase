@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { LearnView } from "./components/LearnView";
 import { MapControls } from "./components/MapControls";
+import { LongViewCard } from "./components/LongViewCard";
 import { MapView, type Basemap } from "./components/MapView";
 import { SpotHistory } from "./components/SpotHistory";
 import { StoryPanel } from "./components/StoryPanel";
@@ -22,7 +23,8 @@ export default function App() {
   const [view, setView] = useState<View>(initialView);
   const [storyId, setStoryId] = useState<StoryId>(view === "floods" ? "floods" : "galamsey");
   const story = STORIES[storyId];
-  const { data, exposure } = useStoryData(story);
+  const { data, exposure, longview } = useStoryData(story);
+  const [longYear, setLongYear] = useState<number | null>(null);
   const pixels = usePixels(story.id);
   const [spot, setSpot] = useState<{ lon: number; lat: number } | null>(null);
   const onSpot = useCallback((lon: number, lat: number) => setSpot({ lon, lat }), []);
@@ -68,6 +70,7 @@ export default function App() {
     setCompareIndex(null);
     setPlaying(false);
     setSpot(null);
+    setLongYear(null);
     stopAudio.current?.();
   }, [storyId, dates.length]);
 
@@ -130,6 +133,7 @@ export default function App() {
   const compareDate = cmpAt !== null ? dates[cmpAt] : null;
   const compareFrame = compareDate ? data.frames.find((f) => f.date === compareDate) : undefined;
   const people = exposure?.frames[date];
+  const longImage = longYear !== null ? longview?.years.find((y) => y.year === longYear)?.image ?? null : null;
 
   return (
     <div className="app">
@@ -147,6 +151,7 @@ export default function App() {
             onPickDate={pickDate}
             listening={listening}
             onListen={toggleListen}
+            extra={longview ? <LongViewCard data={longview} year={longYear} onYear={(y) => { setLongYear(y); setCompareIndex(null); }} /> : null}
           />
           <section className="stage" aria-label="Radar map">
             <MapView
@@ -155,6 +160,7 @@ export default function App() {
               places={story.places}
               communities={showChange ? people?.communities ?? [] : []}
               spot={spot}
+              longview={longImage}
               onSpot={pixels ? onSpot : undefined}
               frame={frame}
               compareFrame={compareFrame}
@@ -186,6 +192,12 @@ export default function App() {
               changeSwatch={story.changeSwatch ?? story.changeColor}
               formatDate={shortDate}
             />
+            {longYear !== null && longImage && (
+              <div className="lv-banner" role="status">
+                <span>Sentinel-1 · {longYear} dry season</span>
+                <button onClick={() => setLongYear(null)}>Back to NISAR 2026</button>
+              </div>
+            )}
             {spot && pixels && (
               <SpotHistory
                 story={story.id}
@@ -203,7 +215,7 @@ export default function App() {
             <Timeline
               dates={dates}
               index={at}
-              onIndex={(i) => { setPlaying(false); setIndex(i); }}
+              onIndex={(i) => { setPlaying(false); setIndex(i); setLongYear(null); }}
               events={story.events}
               playing={playing}
               onTogglePlay={togglePlay}

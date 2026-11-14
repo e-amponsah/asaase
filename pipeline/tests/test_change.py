@@ -85,3 +85,14 @@ def test_parse_gunw_name():
 def test_exposure_rounding():
     from asaase.exposure import _round
     assert (_round(27.4), _round(994), _round(3445)) == (30, 990, 3400)
+
+
+def test_longview_calibration_finds_the_matching_threshold():
+    from asaase.longview import calibrate_threshold
+    rng = np.random.default_rng(4)
+    db = rng.normal(-13.0, 0.4, (120, 120))           # forest
+    truth = np.zeros_like(db, dtype=bool)
+    truth[30:70, 20:90] = True
+    db[truth] = rng.normal(-16.5, 0.4, truth.sum())  # scars, clearly darker
+    thr, iou = calibrate_threshold(db, truth)
+    assert -16.0 <= thr <= -13.75 and iou > 0.9

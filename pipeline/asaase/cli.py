@@ -1,13 +1,17 @@
-"""Command line: asaase {search,download,quicklook,build} <story>"""
+"""Command line: asaase {search,download,quicklook,coherence,exposure,longview,build} <story>"""
 
 from __future__ import annotations
 
 import argparse
+import sys
 
 from . import config
 
 
 def main(argv: list[str] | None = None) -> None:
+    for stream in (sys.stdout, sys.stderr):  # Windows consoles default to cp1252: keep ², → and ≥ printable
+        if hasattr(stream, "reconfigure"):
+            stream.reconfigure(encoding="utf-8", errors="replace")
     ap = argparse.ArgumentParser(prog="asaase", description=__doc__)
     sub = ap.add_subparsers(dest="cmd", required=True)
     stories = sorted(config.STORIES)
@@ -31,6 +35,10 @@ def main(argv: list[str] | None = None) -> None:
 
     b = sub.add_parser("build", help="write web layers and story.json for the app")
     b.add_argument("story", choices=stories)
+
+    lv = sub.add_parser("longview", help="Sentinel-1 yearly scar layers, 2016-2026 (galamsey)")
+    lv.add_argument("story", choices=["galamsey"])
+    lv.add_argument("--fetch", action="store_true", help="read and cache the yearly composites first")
 
     x = sub.add_parser("exposure", help="people in and near the flood water per pass (floods only)")
     x.add_argument("story", choices=["floods"])
@@ -62,6 +70,13 @@ def main(argv: list[str] | None = None) -> None:
         from .quicklook import quicklook
 
         print(quicklook(args.story, args.before, args.after, args.pol))
+    elif args.cmd == "longview":
+        from .longview import build_longview, fetch_longview
+
+        story = config.STORIES[args.story]
+        if args.fetch:
+            fetch_longview(story)
+        print(build_longview(story))
     elif args.cmd == "exposure":
         from .exposure import build_exposure
 

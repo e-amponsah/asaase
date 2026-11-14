@@ -71,7 +71,8 @@ export const STORIES: Record<StoryId, StoryContent> = {
     lede:
       "Each rainy season, water spilled from Burkina Faso's Bagré Dam runs down the White Volta " +
       "into northern Ghana. In 2026 the spill began in late August. Radar maps the water on every " +
-      "pass, cloud or no cloud, so we can watch the river swell and settle.",
+      "pass, cloud or no cloud, so we can watch the river swell and settle. Most of the flooding " +
+      "it finds is on the lower Kulpawn and Sissili, tributaries that meet the White Volta from the west.",
     bounds: [-1.5, 9.45, -0.75, 10.7],
     track: "Ascending 44 · frames 6–7",
     dates: [
@@ -100,6 +101,7 @@ export const STORIES: Record<StoryId, StoryContent> = {
     places: [
       { name: "Pwalugu", lon: -0.84, lat: 10.6 },
       { name: "Daboya", lon: -1.42, lat: 9.53 },
+      { name: "Kulpawn–Sissili confluence", lon: -1.24, lat: 10.28 },
     ],
     illustrativeSeries: {
       label: "Flooded area",

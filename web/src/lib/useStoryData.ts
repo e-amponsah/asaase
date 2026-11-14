@@ -1,13 +1,20 @@
 import { useEffect, useState } from "react";
-import type { Exposure, StoryContent, StoryData } from "../types";
+import type { Exposure, LongView, StoryContent, StoryData } from "../types";
 
 /**
  * Loads pipeline output (public/data/<story>/story.json). Until the pipeline has run,
  * falls back to the story's illustrative series, with no radar frames and illustrative: true.
  */
-export function useStoryData(story: StoryContent): { data: StoryData; exposure: Exposure | null; loading: boolean } {
-  const [state, setState] = useState<{ id: string; data: StoryData | null; exposure: Exposure | null }>(
-    { id: "", data: null, exposure: null },
+interface Loaded {
+  data: StoryData;
+  exposure: Exposure | null;
+  longview: LongView | null;
+  loading: boolean;
+}
+
+export function useStoryData(story: StoryContent): Loaded {
+  const [state, setState] = useState<{ id: string; data: StoryData | null; exposure: Exposure | null; longview: LongView | null }>(
+    { id: "", data: null, exposure: null, longview: null },
   );
 
   useEffect(() => {
@@ -16,10 +23,11 @@ export function useStoryData(story: StoryContent): { data: StoryData; exposure: 
       fetch(`${import.meta.env.BASE_URL}data/${story.id}/${file}`)
         .then((r) => (r.ok ? r.json() : null))
         .catch(() => null);
-    // exposure.json is optional (floods only).
-    Promise.all([get<StoryData>("story.json"), get<Exposure>("exposure.json")]).then(([json, exposure]) => {
-      if (!cancelled) setState({ id: story.id, data: json?.frames?.length ? json : null, exposure });
-    });
+    // exposure.json (floods) and longview/longview.json (galamsey) are optional.
+    Promise.all([get<StoryData>("story.json"), get<Exposure>("exposure.json"), get<LongView>("longview/longview.json")])
+      .then(([json, exposure, longview]) => {
+        if (!cancelled) setState({ id: story.id, data: json?.frames?.length ? json : null, exposure, longview });
+      });
     return () => {
       cancelled = true;
     };
@@ -40,6 +48,7 @@ export function useStoryData(story: StoryContent): { data: StoryData; exposure: 
   return {
     data: current && state.data ? state.data : fallback,
     exposure: current ? state.exposure : null,
+    longview: current ? state.longview : null,
     loading: !current,
   };
 }

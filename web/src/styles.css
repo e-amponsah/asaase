@@ -565,3 +565,32 @@ a { color: var(--gold); text-underline-offset: 3px; }
   .spot { top: auto; bottom: 124px; left: 12px; right: 12px; width: auto; }
   .ctrl-hint { display: none; }
 }
+
+/* Sentinel-1 long view */
+.lv-lede { margin: 0 0 10px; font-size: 13px; line-height: 1.5; color: var(--text-2); }
+.lv-lede strong { color: var(--text); }
+.lv-bars { display: flex; align-items: flex-end; gap: 4px; height: 140px; padding-top: 6px; }
+.lv-bar {
+  flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 4px;
+  height: 100%; padding: 0; border: 0; background: transparent; cursor: pointer;
+}
+.lv-bar:disabled { cursor: default; }
+.lv-fill { width: 100%; border-radius: 3px 3px 0 0; background: rgb(217 154 62 / 0.55); transition: background 0.15s; }
+.lv-bar:hover:not(:disabled) .lv-fill { background: rgb(217 154 62 / 0.8); }
+.lv-bar.is-on .lv-fill { background: #d99a3e; box-shadow: 0 0 0 2px rgb(217 154 62 / 0.35); }
+.lv-bar.is-missing .lv-fill { background: var(--line); }
+.lv-year { font: 500 10.5px var(--font-mono); color: var(--muted); }
+.lv-bar.is-on .lv-year { color: var(--text); }
+.link { border: 0; padding: 0; background: none; color: var(--gold); font: inherit; cursor: pointer; text-decoration: underline; }
+.lv-banner {
+  position: absolute; z-index: 5; top: 16px; left: 50%; transform: translateX(-50%);
+  display: flex; align-items: center; gap: 10px; padding: 6px 6px 6px 14px; border-radius: 999px;
+  background: rgb(16 22 21 / 0.95); border: 1px solid #d99a3e; box-shadow: var(--shadow);
+  font-size: 13px; color: var(--text); white-space: nowrap;
+}
+.lv-banner button {
+  border: 0; border-radius: 999px; padding: 5px 10px; background: var(--surface-3); color: var(--text-2);
+  font: 500 12px var(--font-ui); cursor: pointer;
+}
+.lv-banner button:hover { color: var(--text); }
+@media (max-width: 767px) { .lv-banner { top: auto; bottom: 128px; } }

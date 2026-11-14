@@ -12,6 +12,7 @@ interface Props {
   places: Place[];
   communities?: Community[];
   spot?: { lon: number; lat: number } | null;
+  longview?: string | null;   // Sentinel-1 scar image of one year: replaces the NISAR layers
   onSpot?: (lon: number, lat: number) => void;
   frame?: Frame;
   compareFrame?: Frame;
@@ -98,7 +99,7 @@ function placeMarker(p: Place) {
 }
 
 export function MapView(props: Props) {
-  const { bounds, storyKey, places, communities = [], spot = null, onSpot, frame, compareFrame, date, compareDate, basemap, showBase, showFootprint, showChange, hasData } = props;
+  const { bounds, storyKey, places, communities = [], spot = null, longview = null, onSpot, frame, compareFrame, date, compareDate, basemap, showBase, showFootprint, showChange, hasData } = props;
   const mainEl = useRef<HTMLDivElement>(null);
   const cmpEl = useRef<HTMLDivElement>(null);
   const maps = useRef<{ main: MLMap; cmp: MLMap } | null>(null);
@@ -202,9 +203,24 @@ export function MapView(props: Props) {
   useEffect(() => {
     if (!loaded || !maps.current) return;
     const show = { base: showBase, footprint: showFootprint, change: showChange };
-    setImages(maps.current.main, frame, bounds, show);
+    const main = maps.current.main;
+    setImages(main, longview ? undefined : frame, bounds, show);
     setImages(maps.current.cmp, compareFrame, bounds, show);
-  }, [loaded, frame, compareFrame, bounds, showBase, showFootprint, showChange]);
+    // Sentinel-1 long view: one year's scars on their own layer.
+    const id = "radar-longview";
+    if (longview) {
+      const href = new URL(longview, document.baseURI).href;
+      const src = main.getSource(id) as ImageSource | undefined;
+      if (src) src.updateImage({ url: href, coordinates: corners(bounds) });
+      else {
+        main.addSource(id, { type: "image", url: href, coordinates: corners(bounds) });
+        main.addLayer({ id, type: "raster", source: id, paint: { "raster-opacity": 1, "raster-fade-duration": 0 } }, "aoi-fill");
+      }
+      main.setLayoutProperty(id, "visibility", "visible");
+    } else if (main.getLayer(id)) {
+      main.setLayoutProperty(id, "visibility", "none");
+    }
+  }, [loaded, frame, compareFrame, bounds, showBase, showFootprint, showChange, longview]);
 
   useEffect(() => {
     if (comparing) maps.current?.cmp.resize();

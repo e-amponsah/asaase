@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { formatValue } from "../lib/format";
 import type { ExposureFrame, Frame, StoryContent, StoryData } from "../types";
 import { SeriesChart } from "./SeriesChart";
@@ -18,9 +19,10 @@ interface Props {
   onPickDate: (d: string) => void;
   listening: boolean;
   onListen: () => void;
+  extra?: ReactNode;   // story-specific cards shown under the main chart
 }
 
-export function StoryPanel({ story, data, frame, people, currentDate, onPickDate, listening, onListen }: Props) {
+export function StoryPanel({ story, data, frame, people, currentDate, onPickDate, listening, onListen, extra }: Props) {
   const breakdown = Object.entries(frame?.stats ?? {}).filter(([k]) => k in BREAKDOWN);
   return (
     <aside className="panel" aria-label={story.title}>
@@ -104,6 +106,8 @@ export function StoryPanel({ story, data, frame, people, currentDate, onPickDate
             </span>
           </button>
         </section>
+
+        {extra}
 
         <section className="card">
           <header className="card-head">

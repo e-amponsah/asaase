@@ -84,8 +84,13 @@ of a flood.
 | 15 Oct | receding | 1.4 | 0.5 |
 | 27 Oct | back to baseline | 0.0 | 0.1 |
 
-- Most flood water sits under vegetation along the north-western tributaries, not as open water: new
-  open water never exceeds 1.3 km².
+- Most flood water sits under vegetation on the **lower Kulpawn and Sissili rivers**, tributaries that
+  join the White Volta from the west, around their confluence (10.28°N, 1.24°W). At the peak, 8.4 of
+  11.9 km² lies nearest these two rivers and 3.6 km² nearest the White Volta itself, whose main channel
+  changes little. New open water never exceeds 1.3 km². (River names and courses: OpenStreetMap.)
+- High water on the White Volta can back up into tributary mouths, and the Sissili also drains from
+  Burkina Faso, so radar alone cannot say how much of this water came from the spill and how much
+  from rain.
 - A broader brightening along the rivers (HH alone up by 3 dB or more) keeps growing into mid-October.
   It rises in HV as well, so it fits wet soil and growing crops late in the rainy season, and we do not
   count it as flood.

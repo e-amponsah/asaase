@@ -65,6 +65,26 @@ export interface Exposure {
   frames: Record<string, ExposureFrame>;
 }
 
+/** Sentinel-1 long view (web/public/data/galamsey/longview/longview.json). */
+export interface LongViewYear {
+  year: number;
+  image: string;
+  scarKm2: number;
+  coverage: number;
+  scenes: number;
+  from: string;
+  to: string;
+  offsetDb?: number;
+}
+
+export interface LongView {
+  source: string;
+  bounds: Bounds;
+  thresholdDb: number;
+  calibration: string;
+  years: LongViewYear[];
+}
+
 export interface Place {
   name: string;
   lon: number;
