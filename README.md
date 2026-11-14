@@ -100,6 +100,7 @@ Never commit credentials: `.gitignore` excludes `.netrc`, `.env` and all `.h5` f
 - NISAR L-band products: NASA/JPL-Caltech and ISRO, distributed by the
   [ASF DAAC](https://nisar-docs.asf.alaska.edu/).
 - Basemaps: Esri (Dark Gray Canvas, World Imagery).
+- Sentinel-1 (Copernicus, ESA), terrain-corrected, via [Microsoft Planetary Computer](https://planetarycomputer.microsoft.com/dataset/sentinel-1-rtc).
 - Population: [WorldPop](https://www.worldpop.org/) 2020, Ghana, constrained, 100 m (CC BY 4.0).
 - Settlements: © [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors (ODbL).
 - News and context sources are listed in each story's panel.
