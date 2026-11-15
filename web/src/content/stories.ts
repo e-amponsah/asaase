@@ -18,6 +18,7 @@ export const STORIES: Record<StoryId, StoryContent> = {
       "sees through the cloud and maps the scars: stripped river banks and mined stream " +
       "valleys, pass after pass.",
     bounds: [-2.1, 5.85, -1.7, 6.15],
+    outlines: "data/galamsey/licensed.geojson",
     track: "Ascending 145 · frames 4–5",
     dates: [
       "2026-06-24", "2026-07-06", "2026-07-18", "2026-08-11", "2026-08-23",
@@ -30,16 +31,20 @@ export const STORIES: Record<StoryId, StoryContent> = {
     readingTheRadar: [
       { swatch: "#d9dedc", label: "Bright", text: "Intact forest. Leaves and branches scatter the radar back in many directions (volume scattering)." },
       { swatch: "#4a5250", label: "Dark", text: "Bare, dug-up ground or water-filled pits. Little energy comes back. Galamsey follows streams, so the scars branch like the river network." },
+      { swatch: "repeating-linear-gradient(90deg, #ffffff 0 4px, transparent 4px 7px)", label: "Dashed outline", text: "Perseus Mining's licensed Edikan gold mine near Ayanfuri: industrial pits and tailings dams, not galamsey. About 6 km² of the scars fall inside it (outline: OpenStreetMap)." },
       { swatch: "#d99a3e", label: "Amber", text: "Mining scars: all land dark enough in HV to be stripped or mined on that date. Matches the brown scars in optical imagery." },
       { swatch: "#f05a3c", label: "Ember", text: "New disturbance: HV fell by 3 dB or more since the first pass, after correcting for scene-wide seasonal drift." },
     ],
     stats: [
-      { value: "≈ 8,900 ha", label: "of forest reserve degraded by illegal mining by end-2024 (Forestry Commission)" },
+      { value: "≈ 9,000 ha", label: "of Ghana's forest reserves destroyed by galamsey nationwide, over 5,200 ha of it since 2021 (Forestry Commission, March 2026)" },
       { value: "10", label: "dual-polarized NISAR passes, June to October 2026" },
       { value: "24 cm", label: "L-band wavelength: passes through cloud and reaches below the canopy" },
     ],
     events: [],
-    places: [{ name: "Dunkwa-on-Offin", lon: -1.78, lat: 5.96 }],
+    places: [
+      { name: "Dunkwa-on-Offin", lon: -1.78, lat: 5.96 },
+      { name: "Edikan mine (licensed)", lon: -1.914, lat: 5.958, side: "left" },
+    ],
     illustrativeSeries: {
       label: "Damaged land",
       unit: "km²",
@@ -74,6 +79,7 @@ export const STORIES: Record<StoryId, StoryContent> = {
       "pass, cloud or no cloud, so we can watch the river swell and settle. Most of the flooding " +
       "it finds is on the lower Kulpawn and Sissili, tributaries that meet the White Volta from the west.",
     bounds: [-1.5, 9.45, -0.75, 10.7],
+    focus: [-1.45, 10.12, -1.0, 10.48], // the Kulpawn–Sissili floodplain, where most flooding is
     track: "Ascending 44 · frames 6–7",
     dates: [
       "2026-06-29", "2026-07-11", "2026-07-23", "2026-08-16", "2026-08-28",
@@ -90,7 +96,7 @@ export const STORIES: Record<StoryId, StoryContent> = {
       { swatch: "#b48cff", label: "Violet", text: "Flooded vegetation: HH brightened sharply and far more than HV. Growing crops or wet soil brighten both channels together, so they are left out." },
     ],
     stats: [
-      { value: "28 Aug", label: "2026: Bagré Dam spill begins, NADMO advises riverside evacuation" },
+      { value: "28 Aug", label: "2026: SONABEL begins spilling Bagré Dam; NADMO sets up safe havens for displaced people" },
       { value: "10", label: "dual-polarized NISAR passes on one track, late June to late October" },
       { value: "12 days", label: "between repeat passes over the same ground" },
     ],

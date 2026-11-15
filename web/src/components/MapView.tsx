@@ -1,14 +1,18 @@
 import { useEffect, useRef, useState } from "react";
 import maplibregl, { type ImageSource, type Map as MLMap, type StyleSpecification } from "maplibre-gl";
-import "maplibre-gl/dist/maplibre-gl.css";
 import { shortDate } from "../lib/format";
-import type { Bounds, Community, Frame, Place } from "../types";
+import type { Theme } from "../lib/useTheme";
+import type { Bounds, Community, Frame, Place, Reserves } from "../types";
 
 export type Basemap = "dark" | "satellite";
 
 interface Props {
   bounds: Bounds;
   storyKey: string;
+  focus?: Bounds;
+  outlines?: string;
+  reserves?: Reserves | null;
+  showReserves?: boolean;
   places: Place[];
   communities?: Community[];
   spot?: { lon: number; lat: number } | null;
@@ -19,6 +23,7 @@ interface Props {
   date: string;
   compareDate: string | null;
   basemap: Basemap;
+  theme?: Theme;
   showBase: boolean;
   showFootprint: boolean;
   showChange: boolean;
@@ -26,7 +31,11 @@ interface Props {
 }
 
 // Keeps the study area clear of the floating controls (top) and timeline (bottom).
-const FIT_PADDING = { top: 96, bottom: 150, left: 48, right: 48 };
+/** Padding that keeps the study area clear of the floating panel (desktop) and the time bar. */
+const fitPadding = () =>
+  window.matchMedia("(max-width: 860px)").matches
+    ? { top: 70, bottom: 110, left: 24, right: 24 }
+    : { top: 72, bottom: 120, left: 440, right: 72 };
 
 // Key-free Esri basemaps (attribution required).
 const esri = (service: string) => [`https://server.arcgisonline.com/ArcGIS/rest/services/${service}/MapServer/tile/{z}/{y}/{x}`];
@@ -37,15 +46,24 @@ const STYLE: StyleSpecification = {
     dark: { type: "raster", tiles: esri("Canvas/World_Dark_Gray_Base"), tileSize: 256, maxzoom: 16, attribution: "Basemap © Esri, HERE, Garmin, © OpenStreetMap contributors" },
     satellite: { type: "raster", tiles: esri("World_Imagery"), tileSize: 256, maxzoom: 18, attribution: "Imagery © Esri, Maxar, Earthstar Geographics" },
     labels: { type: "raster", tiles: esri("Canvas/World_Dark_Gray_Reference"), tileSize: 256, maxzoom: 16 },
+    light: { type: "raster", tiles: esri("Canvas/World_Light_Gray_Base"), tileSize: 256, maxzoom: 16, attribution: "Basemap © Esri, HERE, Garmin, © OpenStreetMap contributors" },
+    lightLabels: { type: "raster", tiles: esri("Canvas/World_Light_Gray_Reference"), tileSize: 256, maxzoom: 16 },
     aoi: { type: "geojson", data: { type: "FeatureCollection", features: [] } },
+    outlines: { type: "geojson", data: { type: "FeatureCollection", features: [] } },
+    reserves: { type: "geojson", data: { type: "FeatureCollection", features: [] } },
   },
   layers: [
     { id: "bg", type: "background", paint: { "background-color": "#0a0e0d" } },
     { id: "dark", type: "raster", source: "dark" },
+    { id: "light", type: "raster", source: "light", layout: { visibility: "none" } },
     { id: "satellite", type: "raster", source: "satellite", layout: { visibility: "none" }, paint: { "raster-saturation": -0.25 } },
-    { id: "aoi-fill", type: "fill", source: "aoi", paint: { "fill-color": "#e8b23a", "fill-opacity": 0.05 } },
-    { id: "aoi-line", type: "line", source: "aoi", paint: { "line-color": "#e8b23a", "line-width": 1.5, "line-dasharray": [3, 2] } },
+    { id: "aoi-fill", type: "fill", source: "aoi", paint: { "fill-color": "#ffffff", "fill-opacity": 0 } },
+    { id: "aoi-line", type: "line", source: "aoi", paint: { "line-color": "#ffffff", "line-opacity": 0.35, "line-width": 1 } },
+    { id: "reserves-fill", type: "fill", source: "reserves", layout: { visibility: "none" }, paint: { "fill-color": "#2fa36b", "fill-opacity": 0.1 } },
+    { id: "reserves-line", type: "line", source: "reserves", layout: { visibility: "none" }, paint: { "line-color": "#4cd08a", "line-width": 1.6, "line-dasharray": [3, 2] } },
+    { id: "outlines", type: "line", source: "outlines", paint: { "line-color": "#ffffff", "line-width": 1.6, "line-dasharray": [2, 1.5], "line-opacity": 0.95 } },
     { id: "labels", type: "raster", source: "labels", paint: { "raster-opacity": 0.85 } },
+    { id: "labels-light", type: "raster", source: "lightLabels", layout: { visibility: "none" }, paint: { "raster-opacity": 0.9 } },
   ],
 };
 
@@ -84,7 +102,9 @@ function setImages(map: MLMap, frame: Frame | undefined, bounds: Bounds, show: V
     if (src) src.updateImage({ url: href, coordinates: corners(bounds) });
     else {
       map.addSource(id, { type: "image", url: href, coordinates: corners(bounds) });
-      map.addLayer({ id, type: "raster", source: id, paint: { "raster-opacity": opacity, "raster-fade-duration": 0 } }, "aoi-fill");
+      // The radar image is mostly bright forest: take the glare off so the data layers read first.
+      const tone = id === "radar-base" ? { "raster-brightness-max": 0.82, "raster-contrast": 0.08 } : {};
+      map.addLayer({ id, type: "raster", source: id, paint: { "raster-opacity": opacity, "raster-fade-duration": 0, ...tone } }, "aoi-fill");
     }
     map.setLayoutProperty(id, "visibility", show ? "visible" : "none");
   }
@@ -92,14 +112,14 @@ function setImages(map: MLMap, frame: Frame | undefined, bounds: Bounds, show: V
 
 function placeMarker(p: Place) {
   const el = document.createElement("div");
-  el.className = "place";
+  el.className = p.side === "left" ? "place place-left" : "place";
   el.innerHTML = `<span class="place-dot"></span><span class="place-name"></span>`;
   (el.querySelector(".place-name") as HTMLElement).textContent = p.name;
-  return new maplibregl.Marker({ element: el, anchor: "left" }).setLngLat([p.lon, p.lat]);
+  return new maplibregl.Marker({ element: el, anchor: p.side === "left" ? "right" : "left" }).setLngLat([p.lon, p.lat]);
 }
 
 export function MapView(props: Props) {
-  const { bounds, storyKey, places, communities = [], spot = null, longview = null, onSpot, frame, compareFrame, date, compareDate, basemap, showBase, showFootprint, showChange, hasData } = props;
+  const { bounds, focus, outlines, reserves = null, showReserves = false, storyKey, places, communities = [], spot = null, longview = null, onSpot, frame, compareFrame, date, compareDate, basemap, theme = "dark", showBase, showFootprint, showChange, hasData } = props;
   const mainEl = useRef<HTMLDivElement>(null);
   const cmpEl = useRef<HTMLDivElement>(null);
   const maps = useRef<{ main: MLMap; cmp: MLMap } | null>(null);
@@ -111,8 +131,9 @@ export function MapView(props: Props) {
   useEffect(() => {
     if (!mainEl.current || !cmpEl.current) return;
     // Each map gets its own copy: MapLibre mutates the style object it is given.
-    const opts = { bounds: bounds as [number, number, number, number], fitBoundsOptions: { padding: FIT_PADDING }, maxPitch: 0, dragRotate: false };
-    const main = new maplibregl.Map({ ...opts, style: structuredClone(STYLE), container: mainEl.current, attributionControl: { compact: true } });
+    const opts = { bounds: bounds as [number, number, number, number], fitBoundsOptions: { padding: fitPadding() }, maxPitch: 0, dragRotate: false };
+    // preserveDrawingBuffer: the share card copies the main map's last frame.
+    const main = new maplibregl.Map({ ...opts, preserveDrawingBuffer: true, style: structuredClone(STYLE), container: mainEl.current, attributionControl: { compact: true } });
     const cmp = new maplibregl.Map({ ...opts, style: structuredClone(STYLE), container: cmpEl.current, attributionControl: false });
     main.addControl(new maplibregl.NavigationControl({ showCompass: false }), "bottom-right");
     main.addControl(new maplibregl.ScaleControl({ unit: "metric" }), "bottom-left");
@@ -147,9 +168,11 @@ export function MapView(props: Props) {
     const { main, cmp } = maps.current;
     const markers = [main, cmp].flatMap((m) => {
       (m.getSource("aoi") as maplibregl.GeoJSONSource).setData(aoiFeature(bounds));
+      (m.getSource("outlines") as maplibregl.GeoJSONSource).setData(
+        outlines ? new URL(outlines, document.baseURI).href : { type: "FeatureCollection", features: [] });
       return places.map((p) => placeMarker(p).addTo(m));
     });
-    main.fitBounds(bounds as [number, number, number, number], { padding: FIT_PADDING, duration: 1400 });
+    main.fitBounds((focus ?? bounds) as [number, number, number, number], { padding: fitPadding(), duration: 1400 });
     return () => markers.forEach((mk) => mk.remove());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loaded, storyKey]);
@@ -178,6 +201,17 @@ export function MapView(props: Props) {
     return () => { mk.remove(); };
   }, [loaded, spot]);
 
+  // Forest reserves (galamsey): outline + light fill, switched from the Layers menu.
+  useEffect(() => {
+    if (!loaded || !maps.current) return;
+    for (const m of [maps.current.main, maps.current.cmp]) {
+      (m.getSource("reserves") as maplibregl.GeoJSONSource).setData(reserves ?? { type: "FeatureCollection", features: [] });
+      const vis = reserves && showReserves ? "visible" : "none";
+      m.setLayoutProperty("reserves-fill", "visibility", vis);
+      m.setLayoutProperty("reserves-line", "visibility", vis);
+    }
+  }, [loaded, reserves, showReserves]);
+
   // Settlements near flood water on the current pass (main map only).
   const communityKey = communities.map((c) => c.name).join("|");
   useEffect(() => {
@@ -195,10 +229,16 @@ export function MapView(props: Props) {
   useEffect(() => {
     if (!loaded || !maps.current) return;
     for (const m of [maps.current.main, maps.current.cmp]) {
-      m.setLayoutProperty("dark", "visibility", basemap === "dark" ? "visible" : "none");
+      // "Map" follows the interface theme; satellite imagery is the same in both.
+      const map = basemap === "dark";
+      m.setLayoutProperty("dark", "visibility", map && theme === "dark" ? "visible" : "none");
+      m.setLayoutProperty("light", "visibility", map && theme === "light" ? "visible" : "none");
       m.setLayoutProperty("satellite", "visibility", basemap === "satellite" ? "visible" : "none");
+      m.setLayoutProperty("labels", "visibility", !map || theme === "dark" ? "visible" : "none");
+      m.setLayoutProperty("labels-light", "visibility", map && theme === "light" ? "visible" : "none");
+      m.setPaintProperty("bg", "background-color", theme === "light" ? "#eef1f0" : "#0a0e0d");
     }
-  }, [loaded, basemap]);
+  }, [loaded, basemap, theme]);
 
   useEffect(() => {
     if (!loaded || !maps.current) return;

@@ -123,9 +123,11 @@ settlements (`asaase exposure floods`).
 
 - The mining-scar footprint is **141–175 km²** on every pass (150 km² on 24 June, 141 km² on
   22 October). It follows the branching scar network visible in optical imagery along the stream valleys.
-- About **4 km²** of it is one industrial site near 5.96°N, 1.92°W: an engineered tailings dam with a
-  decant pond and a processing plant. That is large-scale licensed-style mining, not galamsey, and we
-  will label it separately.
+- About **6 km²** of it (5.8 km² on 24 June) lies inside **Perseus Mining's licensed Edikan gold mine**
+  near Ayanfuri: open pits, a processing plant and tailings dams. That is industrial mining, not galamsey,
+  so the app draws the mine's outline and labels it. (Site outline: the "Perseus Ghana Mining Limited"
+  area in [OpenStreetMap](https://www.openstreetmap.org/); mine: [Perseus Mining, Edikan](https://perseusmining.com/edikan-mine/).)
+  Everything else in the footprint, about 143 km², is outside it.
 - Pass-to-pass swings of about ±8% track soil and canopy moisture, not mining, so we read the footprint
   rather than its small changes.
 - New disturbance since the first pass grows to about **210–240 ha** by September and October, after
@@ -166,6 +168,23 @@ VH polarization), which has imaged Ghana every 12 days since 2015.
   −14.4 dB vs −13.0 dB for forest), so single-year values carry noise; 2017 has only 9 passes and some
   scattered speckle, so its peak is partly noise. The western edge (about 3.5% of the area) is outside
   both orbits' trimmed swaths.
+
+### Galamsey inside forest reserves
+
+Five forest reserves overlap the study area (boundaries from OpenStreetMap; `asaase reserves galamsey`).
+
+| Forest reserve | NISAR scars, 22 Oct 2026 | Share of the reserve (in our area) | Sentinel-1 scars, 2021 → 2026 |
+| --- | --- | --- | --- |
+| Oda River | 714 ha | 6.8% | 176 → 1,142 ha |
+| Subin Shelterbelt | 189 ha | 7.1% | 10 → 274 ha |
+| Supuma Shelterbelt | 30 ha | 2.0% | 2 → 37 ha |
+| Denyau Shelterbelt | 29 ha | 2.3% | 33 → 54 ha |
+| Tonton | 0 ha | 0% | 1 → 4 ha |
+
+Across the five, mining scars inside protected forest grew from about **220 ha in 2021 to about
+1,500 ha in 2026** in Sentinel-1's dry-season images. NISAR finds 962 ha inside them on its latest pass.
+Limits: reserve boundaries in OpenStreetMap are community-mapped and may differ from the Forestry
+Commission's gazetted boundaries; Oda River extends north of our study area, so only part of it is counted.
 
 ### How we checked the thresholds
 
@@ -287,8 +306,6 @@ the measurement that supports it:
 
 ## What we are checking next
 
-- **Naming the industrial site** near 5.96°N, 1.92°W from a public source, and showing it apart from
-  galamsey in the app.
 - **Finer detail:** the 3 × 3 cleaning step at about 68 m pixels removes features narrower than about
   200 m, such as thin riverbank flooding.
 - **Forest reserves:** boundaries from WDPA, to report mining damage per reserve.
