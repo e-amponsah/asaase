@@ -477,6 +477,19 @@ a { color: var(--gold); text-underline-offset: 3px; }
 .wave { stroke: rgb(120 180 230 / 0.5); fill: none; stroke-width: 1.5; }
 @keyframes travel { to { stroke-dashoffset: -18; } }
 
+/* what drives the patterns */
+.drivers { margin-bottom: 40px !important; }
+.drivers-title { max-width: 760px; margin: 0 0 18px; font: 700 clamp(22px, 2.6vw, 28px)/1.2 var(--font-display); letter-spacing: -0.015em; }
+.drivers-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.drivers-col { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 20px 20px 8px; }
+.drivers-story { margin: 0; font: 600 11.5px var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--gold); }
+.drivers-col h3 { margin: 6px 0 14px; font: 600 18px/1.25 var(--font-display); }
+.drivers-col ol { list-style: none; margin: 0; padding: 0; }
+.drivers-col li { padding: 12px 0 14px; border-top: 1px solid var(--line-soft); }
+.drivers-k { display: inline-block; margin-bottom: 6px; padding: 2px 8px; border-radius: 999px; background: var(--surface-3); font: 500 12px var(--font-mono); color: var(--text); }
+.drivers-col strong { display: block; font-size: 14.5px; color: var(--text); }
+.drivers-col li p { margin: 4px 0 0; font-size: 13.5px; line-height: 1.55; color: var(--text-2); }
+
 .learn-cta { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 .cta {
   text-align: left; display: flex; flex-direction: column; gap: 4px;
@@ -526,7 +539,7 @@ a { color: var(--gold); text-underline-offset: 3px; }
   .swipe-label { bottom: 120px; }
 
   .facts { grid-template-columns: 1fr 1fr; }
-  .scatter-grid, .learn-cta { grid-template-columns: 1fr; }
+  .scatter-grid, .learn-cta, .drivers-grid { grid-template-columns: 1fr; }
   .learn { padding: 32px 16px 56px; }
 }
 
