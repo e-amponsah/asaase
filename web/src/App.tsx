@@ -202,7 +202,7 @@ export default function App() {
     <div className="app">
       <TopBar view={view} onView={go} theme={theme} onTheme={toggleTheme} />
       {view === "learn" ? (
-        <LearnView onStory={go} />
+        <LearnView onStory={go} theme={theme} />
       ) : (
         <main className={`workspace ${panelOpen ? "" : "panel-hidden"}`}>
           <StoryPanel

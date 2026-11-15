@@ -1,4 +1,9 @@
+import { lazy, Suspense } from "react";
+import type { Theme } from "../lib/useTheme";
 import type { StoryId } from "../types";
+
+// The map library is large: load the globe after the page text.
+const LearnGlobe = lazy(() => import("./LearnGlobe").then((m) => ({ default: m.LearnGlobe })));
 
 const SCATTER = [
   {
@@ -111,10 +116,11 @@ const FACTS = [
   { k: "Day & night", v: "through cloud and smoke" },
 ];
 
-export function LearnView({ onStory }: { onStory: (id: StoryId) => void }) {
+export function LearnView({ onStory, theme }: { onStory: (id: StoryId) => void; theme: Theme }) {
   return (
     <main className="learn">
       <section className="learn-hero">
+        <div className="learn-hero-text">
         <p className="kicker">How radar sees</p>
         <h1>Optical satellites wait for clear skies. Radar brings its own light.</h1>
         <p className="lede">
@@ -130,6 +136,13 @@ export function LearnView({ onStory }: { onStory: (id: StoryId) => void }) {
             </div>
           ))}
         </dl>
+        </div>
+        <figure className="learn-hero-globe">
+          <Suspense fallback={<div className="learn-globe" aria-hidden="true" />}>
+            <LearnGlobe theme={theme} onStory={onStory} />
+          </Suspense>
+          <figcaption>Our two study areas in Ghana. NISAR passes over each one every 12 days. Drag to turn the Earth.</figcaption>
+        </figure>
       </section>
 
       <section className="scatter-grid">
