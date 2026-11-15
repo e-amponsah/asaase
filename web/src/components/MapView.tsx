@@ -163,8 +163,18 @@ class EarthControl implements IControl {
   onRemove() { this.el.remove(); }
 }
 
+/**
+ * MapLibre 5 labels every marker as a "Map marker" button unless it already has a role. Our place and
+ * river names are not clickable, so give them their own name and let screen readers read just that.
+ */
+function asLabel(el: HTMLElement, name: string) {
+  el.setAttribute("role", "img");
+  el.setAttribute("aria-label", name);
+  return el;
+}
+
 function placeMarker(p: Place) {
-  const el = document.createElement("div");
+  const el = asLabel(document.createElement("div"), p.name);
   el.className = p.side === "left" ? "place place-left" : "place";
   el.innerHTML = `<span class="place-dot"></span><span class="place-name"></span>`;
   (el.querySelector(".place-name") as HTMLElement).textContent = p.name;
@@ -287,7 +297,7 @@ export function MapView(props: Props) {
   // Pin on the clicked spot (main map only).
   useEffect(() => {
     if (!loaded || !maps.current || !spot) return;
-    const el = document.createElement("div");
+    const el = asLabel(document.createElement("div"), "Selected spot");
     el.className = "spot-pin";
     const mk = new maplibregl.Marker({ element: el }).setLngLat([spot.lon, spot.lat]).addTo(maps.current.main);
     return () => { mk.remove(); };
@@ -313,7 +323,7 @@ export function MapView(props: Props) {
     }
     if (!showRivers || !rivers) return;
     const labels = rivers.features.map((f) => {
-      const el = document.createElement("div");
+      const el = asLabel(document.createElement("div"), f.properties.name);
       el.className = "river-label";
       el.textContent = f.properties.name;
       return new maplibregl.Marker({ element: el }).setLngLat([f.properties.labelLon, f.properties.labelLat]).addTo(maps.current!.main);

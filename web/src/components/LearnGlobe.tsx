@@ -114,5 +114,5 @@ export function LearnGlobe({ theme, onStory }: { theme: Theme; onStory: (id: Sto
     };
   }, [theme]);
 
-  return <div ref={el} className="learn-globe" role="img" aria-label="Globe showing the two study areas in Ghana" />;
+  return <div ref={el} className="learn-globe" role="group" aria-label="Globe showing the two study areas in Ghana" />;
 }

@@ -1,9 +1,23 @@
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import type { Theme } from "../lib/useTheme";
 import type { StoryId } from "../types";
 
 // The map library is large: load the globe after the page text.
 const LearnGlobe = lazy(() => import("./LearnGlobe").then((m) => ({ default: m.LearnGlobe })));
+
+/** True once the element has come near the screen, so the globe (and the map library) loads only then. */
+function useNearScreen<T extends Element>() {
+  const ref = useRef<T>(null);
+  const [near, setNear] = useState(false);
+  useEffect(() => {
+    if (near || !ref.current) return;
+    if (!("IntersectionObserver" in window)) { setNear(true); return; }
+    const io = new IntersectionObserver((es) => { if (es.some((e) => e.isIntersecting)) setNear(true); }, { rootMargin: "200px" });
+    io.observe(ref.current);
+    return () => io.disconnect();
+  }, [near]);
+  return [ref, near] as const;
+}
 
 const SCATTER = [
   {
@@ -117,6 +131,7 @@ const FACTS = [
 ];
 
 export function LearnView({ onStory, theme }: { onStory: (id: StoryId) => void; theme: Theme }) {
+  const [globeRef, globeNear] = useNearScreen<HTMLElement>();
   return (
     <main className="learn">
       <section className="learn-hero">
@@ -137,10 +152,14 @@ export function LearnView({ onStory, theme }: { onStory: (id: StoryId) => void; 
           ))}
         </dl>
         </div>
-        <figure className="learn-hero-globe">
-          <Suspense fallback={<div className="learn-globe" aria-hidden="true" />}>
-            <LearnGlobe theme={theme} onStory={onStory} />
-          </Suspense>
+        <figure className="learn-hero-globe" ref={globeRef}>
+          {globeNear ? (
+            <Suspense fallback={<div className="learn-globe" aria-hidden="true" />}>
+              <LearnGlobe theme={theme} onStory={onStory} />
+            </Suspense>
+          ) : (
+            <div className="learn-globe" aria-hidden="true" />
+          )}
           <figcaption>Our two study areas in Ghana. NISAR passes over each one every 12 days. Drag to turn the Earth.</figcaption>
         </figure>
       </section>

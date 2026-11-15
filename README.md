@@ -27,6 +27,7 @@ Plus **How radar sees**, a plain-language explainer of mirror, canopy and double
 
 In the app you can:
 
+- start from the whole **globe** and fly in to each study area, or zoom back out to see where it sits on Earth;
 - step through every NISAR pass on a timeline, or play it as an animation;
 - **swipe** between two dates to compare them side by side;
 - switch between the radar and satellite photos to check what the radar found;
