@@ -44,7 +44,8 @@ export default function App() {
   const [theme, toggleTheme] = useTheme();
   const [storyId, setStoryId] = useState<StoryId>(view === "floods" ? "floods" : "galamsey");
   const story = STORIES[storyId];
-  const { data, exposure, longview, reserves } = useStoryData(story);
+  const { data, exposure, longview, reserves, rivers } = useStoryData(story);
+  const [showRivers, setShowRivers] = useState(true);
   const [showReserves, setShowReserves] = useState(false);
   const [longYear, setLongYear] = useState<number | null>(null);
   const [spot, setSpot] = useState<{ lon: number; lat: number } | null>(null);
@@ -235,6 +236,8 @@ export default function App() {
               outlines={story.outlines}
               reserves={reserves}
               showReserves={showReserves}
+              rivers={rivers}
+              showRivers={showRivers}
               places={story.places}
               communities={showChange ? people?.communities ?? [] : []}
               spot={spot}
@@ -262,6 +265,9 @@ export default function App() {
                   ? [{ id: "footprint", label: story.footprint.label, swatch: story.footprint.color, on: showFootprint, onChange: setShowFootprint }]
                   : []),
                 { id: "change", label: story.changeLabel, swatch: story.changeSwatch ?? story.changeColor, on: showChange, onChange: setShowChange },
+                ...(rivers
+                  ? [{ id: "rivers", label: "Rivers", swatch: "#5cb8ff", on: showRivers, onChange: setShowRivers, hint: "River names and courses from OpenStreetMap" }]
+                  : []),
                 ...(reserves
                   ? [{ id: "reserves", label: "Forest reserves", swatch: "repeating-linear-gradient(90deg,#4cd08a 0 4px,transparent 4px 7px)",
                        on: showReserves, onChange: setShowReserves, hint: "Reserve boundaries from OpenStreetMap" }]

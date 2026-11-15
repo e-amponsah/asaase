@@ -107,7 +107,6 @@ export const STORIES: Record<StoryId, StoryContent> = {
     places: [
       { name: "Pwalugu", lon: -0.84, lat: 10.6 },
       { name: "Daboya", lon: -1.42, lat: 9.53 },
-      { name: "Kulpawn–Sissili confluence", lon: -1.24, lat: 10.28 },
     ],
     illustrativeSeries: {
       label: "Flooded area",

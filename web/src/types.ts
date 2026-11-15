@@ -85,6 +85,13 @@ export interface LongView {
   years: LongViewYear[];
 }
 
+/** Named rivers drawn on the map (web/public/data/<story>/rivers.geojson, from OpenStreetMap). */
+export interface Rivers {
+  type: "FeatureCollection";
+  features: { type: "Feature"; properties: { name: string; labelLon: number; labelLat: number };
+              geometry: { type: "MultiLineString"; coordinates: number[][][] } }[];
+}
+
 /** Forest reserves with mining damage (web/public/data/galamsey/reserves.geojson). */
 export interface ReserveProps {
   name: string;

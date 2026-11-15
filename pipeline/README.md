@@ -15,10 +15,11 @@ for the method, tracks, dates and results.
 | `build.py` | Full run, writing `web/public/data/<story>/story.json` |
 | `quicklook.py` | Before / after / difference PNG for a pair of passes |
 | `longview.py` | Sentinel-1 yearly scar layers, 2016–2026, calibrated against NISAR (Planetary Computer) |
+| `rivers.py` | Named rivers for the map (OpenStreetMap), thinned and labelled |
 | `reserves.py` | Mining damage inside forest reserves (OpenStreetMap boundaries), NISAR and Sentinel-1 |
 | `validate.py` | Checks against independent data: Global Forest Watch loss (galamsey), Sentinel-1 (floods) |
 | `exposure.py` | People in and within 1 km of flood water per pass (WorldPop + OpenStreetMap) |
 | `coherence.py` | Read and cache interferometric coherence from GUNW pairs (remote, window only) |
-| `cli.py` | The `asaase` command: `search`, `download`, `quicklook`, `coherence`, `exposure`, `longview`, `validate`, `reserves`, `build` |
+| `cli.py` | The `asaase` command: `search`, `download`, `quicklook`, `coherence`, `exposure`, `longview`, `validate`, `reserves`, `rivers`, `build` |
 
 Run the tests with `pytest -q` and lint with `ruff check .`.
