@@ -47,6 +47,18 @@ repeat, via ASF      detect change         numbers per pass           static hos
 The method, study areas, tracks, results so far and what we are still checking are in
 [docs/METHODS.md](docs/METHODS.md).
 
+## How we know
+
+We checked both stories against independent data (details in [docs/METHODS.md](docs/METHODS.md)):
+
+- **Galamsey:** 75% of the mining scars NISAR finds were forest in 2000, according to Global Forest Watch's
+  Landsat-based tree-cover maps. The forest loss that map records inside the scars rose, dipped and surged
+  again (2014–2017, 2018–2021, 2022–2023) exactly as our Sentinel-1 series does.
+- **Floods:** Sentinel-1, a different radar, also brightens where NISAR found flooding in mid-September:
+  26% of those places brightened by 3 dB or more in VV, against 1.8% of the land around them.
+- **Thresholds** were tuned against satellite photos and tested for sensitivity; the flood peaks on
+  21 September whichever reasonable threshold is used.
+
 ## Repository layout
 
 ```
