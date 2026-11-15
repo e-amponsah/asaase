@@ -44,7 +44,7 @@ export default function App() {
   const [theme, toggleTheme] = useTheme();
   const [storyId, setStoryId] = useState<StoryId>(view === "floods" ? "floods" : "galamsey");
   const story = STORIES[storyId];
-  const { data, exposure, longview, reserves, rivers } = useStoryData(story);
+  const { data, exposure, longview, reserves, rivers, loading } = useStoryData(story);
   const [showRivers, setShowRivers] = useState(true);
   const [showReserves, setShowReserves] = useState(false);
   const [longYear, setLongYear] = useState<number | null>(null);
@@ -202,7 +202,7 @@ export default function App() {
     <div className="app">
       <TopBar view={view} onView={go} theme={theme} onTheme={toggleTheme} />
       {view === "learn" ? (
-        <LearnView onStory={go} />
+        <LearnView onStory={go} theme={theme} />
       ) : (
         <main className={`workspace ${panelOpen ? "" : "panel-hidden"}`}>
           <StoryPanel
@@ -252,7 +252,8 @@ export default function App() {
               showBase={showBase}
               showFootprint={showFootprint}
               showChange={showChange}
-              hasData={data.frames.length > 0}
+              hasData={loading || data.frames.length > 0}
+              siteName={story.title}
             />
             </Suspense>
             <LayersControl

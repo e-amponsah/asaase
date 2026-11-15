@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import maplibregl, { type ImageSource, type Map as MLMap, type StyleSpecification } from "maplibre-gl";
+import maplibregl, { type IControl, type ImageSource, type Map as MLMap, type StyleSpecification } from "maplibre-gl";
+import type { FeatureCollection } from "geojson";
 import { shortDate } from "../lib/format";
 import type { Theme } from "../lib/useTheme";
 import type { Bounds, Community, Frame, Place, Reserves, Rivers } from "../types";
@@ -30,6 +31,7 @@ interface Props {
   showFootprint: boolean;
   showChange: boolean;
   hasData: boolean;
+  siteName?: string;   // label for the study area when the globe is zoomed out
 }
 
 // Keeps the study area clear of the floating controls (top) and timeline (bottom).
@@ -42,8 +44,23 @@ const fitPadding = () =>
 // Key-free Esri basemaps (attribution required).
 const esri = (service: string) => [`https://server.arcgisonline.com/ArcGIS/rest/services/${service}/MapServer/tile/{z}/{y}/{x}`];
 
+/** Below this zoom the map is a globe with an atmosphere; MapLibre blends to a flat map as you zoom in. */
+const GLOBE_ZOOM = 5;
+/**
+ * Zoom at which the whole globe fits the visible map with some space around it.
+ * The globe's diameter is about 512 · 2^zoom / π pixels.
+ */
+const earthZoom = (el: HTMLElement) => {
+  const p = fitPadding();
+  const h = Math.min(el.clientHeight - p.top - p.bottom, el.clientWidth - p.left - p.right);
+  return Math.max(0, Math.log2((0.85 * Math.max(h, 200) * Math.PI) / 512));
+};
+
 const STYLE: StyleSpecification = {
   version: 8,
+  projection: { type: "globe" },
+  // Atmosphere halo around the globe, fading out as you zoom in to the study area.
+  sky: { "atmosphere-blend": ["interpolate", ["linear"], ["zoom"], 0, 1, 4, 0.9, 6, 0] },
   sources: {
     dark: { type: "raster", tiles: esri("Canvas/World_Dark_Gray_Base"), tileSize: 256, maxzoom: 16, attribution: "Basemap © Esri, HERE, Garmin, © OpenStreetMap contributors" },
     satellite: { type: "raster", tiles: esri("World_Imagery"), tileSize: 256, maxzoom: 18, attribution: "Imagery © Esri, Maxar, Earthstar Geographics" },
@@ -76,7 +93,7 @@ const corners = ([w, s, e, n]: Bounds): [[number, number], [number, number], [nu
   [w, n], [e, n], [e, s], [w, s],
 ];
 
-function aoiFeature(b: Bounds): GeoJSON.FeatureCollection {
+function aoiFeature(b: Bounds): FeatureCollection {
   const c = corners(b);
   return {
     type: "FeatureCollection",
@@ -115,6 +132,37 @@ function setImages(map: MLMap, frame: Frame | undefined, bounds: Bounds, show: V
   }
 }
 
+const NO_PADDING = { top: 0, bottom: 0, left: 0, right: 0 };
+
+/** Whole-Earth view, the globe centred in the clear part of the map (right of the panel, above the time bar). */
+function flyToEarth(m: MLMap, b: Bounds, duration: number) {
+  m.flyTo({ center: [(b[0] + b[2]) / 2, (b[1] + b[3]) / 2], zoom: earthZoom(m.getContainer()), padding: fitPadding(), duration });
+}
+
+/** Fly in to the study area, easing away the globe view's padding on the way. */
+function flyToArea(m: MLMap, b: Bounds, duration: number) {
+  const cam = m.cameraForBounds(b as [number, number, number, number], { padding: fitPadding() });
+  if (cam) m.flyTo({ ...cam, padding: NO_PADDING, duration });
+}
+
+const centerOf = ([w, s, e, n]: Bounds): [number, number] => [(w + e) / 2, (s + n) / 2];
+
+/** Map button that flies out to the whole globe and back in to the study area. */
+class EarthControl implements IControl {
+  private el = document.createElement("div");
+  constructor(private onClick: () => void) {}
+  onAdd() {
+    this.el.className = "maplibregl-ctrl maplibregl-ctrl-group";
+    this.el.innerHTML =
+      `<button type="button" class="earth-btn" aria-label="Zoom out to the globe" title="Globe view">` +
+      `<svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="1.7"/>` +
+      `<path d="M3.5 12h17M12 3.5c2.6 2.4 3.9 5.2 3.9 8.5s-1.3 6.1-3.9 8.5c-2.6-2.4-3.9-5.2-3.9-8.5s1.3-6.1 3.9-8.5Z" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></button>`;
+    this.el.querySelector("button")!.addEventListener("click", this.onClick);
+    return this.el;
+  }
+  onRemove() { this.el.remove(); }
+}
+
 function placeMarker(p: Place) {
   const el = document.createElement("div");
   el.className = p.side === "left" ? "place place-left" : "place";
@@ -124,30 +172,43 @@ function placeMarker(p: Place) {
 }
 
 export function MapView(props: Props) {
-  const { bounds, focus, outlines, reserves = null, showReserves = false, rivers = null, showRivers = true, storyKey, places, communities = [], spot = null, longview = null, onSpot, frame, compareFrame, date, compareDate, basemap, theme = "dark", showBase, showFootprint, showChange, hasData } = props;
+  const { bounds, focus, outlines, reserves = null, showReserves = false, rivers = null, showRivers = true, storyKey, places, communities = [], spot = null, longview = null, onSpot, frame, compareFrame, date, compareDate, basemap, theme = "dark", showBase, showFootprint, showChange, hasData, siteName } = props;
   const mainEl = useRef<HTMLDivElement>(null);
   const cmpEl = useRef<HTMLDivElement>(null);
   const maps = useRef<{ main: MLMap; cmp: MLMap } | null>(null);
   const [loaded, setLoaded] = useState(false);
   const [split, setSplit] = useState(50);
   const comparing = compareDate !== null;
+  const [zoomedOut, setZoomedOut] = useState(true);
+  // The latest study area, for the globe button (its listener is attached once).
+  const target = useRef<Bounds>(focus ?? bounds);
+  target.current = focus ?? bounds;
 
   // Create both maps once. The second one is only shown in swipe-compare mode.
   useEffect(() => {
     if (!mainEl.current || !cmpEl.current) return;
     // Each map gets its own copy: MapLibre mutates the style object it is given.
-    const opts = { bounds: bounds as [number, number, number, number], fitBoundsOptions: { padding: fitPadding() }, maxPitch: 0, dragRotate: false };
+    // Open on the whole globe; the story effect below then flies in to the study area.
+    const opts = { center: centerOf(bounds), zoom: earthZoom(mainEl.current), maxPitch: 0, dragRotate: false };
     // preserveDrawingBuffer: the share card copies the main map's last frame.
-    const main = new maplibregl.Map({ ...opts, preserveDrawingBuffer: true, style: structuredClone(STYLE), container: mainEl.current, attributionControl: { compact: true } });
+    const main = new maplibregl.Map({ ...opts, canvasContextAttributes: { preserveDrawingBuffer: true }, style: structuredClone(STYLE), container: mainEl.current, attributionControl: { compact: true } });
     const cmp = new maplibregl.Map({ ...opts, style: structuredClone(STYLE), container: cmpEl.current, attributionControl: false });
     main.addControl(new maplibregl.NavigationControl({ showCompass: false }), "bottom-right");
+    // Globe button: out to the whole Earth, or back in to the study area.
+    main.addControl(new EarthControl(() => {
+      // offset keeps Ghana in the part of the map the story panel does not cover
+      if (main.getZoom() > GLOBE_ZOOM) flyToEarth(main, target.current, 2200);
+      else flyToArea(main, target.current, 2200);
+    }), "bottom-right");
+    const onZoom = () => setZoomedOut(main.getZoom() < GLOBE_ZOOM);
+    main.on("zoom", onZoom);
     main.addControl(new maplibregl.ScaleControl({ unit: "metric" }), "bottom-left");
 
     let lock = false;
     const follow = (src: MLMap, dst: MLMap) => () => {
       if (lock) return;
       lock = true;
-      dst.jumpTo({ center: src.getCenter(), zoom: src.getZoom() });
+      dst.jumpTo({ center: src.getCenter(), zoom: src.getZoom(), padding: src.getPadding() });
       lock = false;
     };
     main.on("move", follow(main, cmp));
@@ -177,10 +238,36 @@ export function MapView(props: Props) {
         outlines ? new URL(outlines, document.baseURI).href : { type: "FeatureCollection", features: [] });
       return places.map((p) => placeMarker(p).addTo(m));
     });
-    main.fitBounds((focus ?? bounds) as [number, number, number, number], { padding: fitPadding(), duration: 1400 });
-    return () => markers.forEach((mk) => mk.remove());
+    // From the globe this is a long flight, like arriving in Google Earth; between stories a shorter one.
+    // Opening view centred on the study area in the part of the map the panel does not cover.
+    if (main.getZoom() < GLOBE_ZOOM) flyToEarth(main, bounds, 0);
+    // From the globe, hold the whole-Earth view a moment so it registers before the dive.
+    const fromGlobe = main.getZoom() < GLOBE_ZOOM;
+    const fly = window.setTimeout(() => {
+      flyToArea(main, focus ?? bounds, fromGlobe ? 3200 : 1400);
+    }, fromGlobe ? 900 : 0);
+    return () => { window.clearTimeout(fly); markers.forEach((mk) => mk.remove()); };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loaded, storyKey]);
+
+  // Study-area beacon on the globe: only while zoomed out, where the radar layers are too small to see.
+  // Clicking it flies back in.
+  useEffect(() => {
+    if (!loaded || !maps.current || !zoomedOut) return;
+    const main = maps.current.main;
+    const el = document.createElement("button");
+    el.type = "button";
+    el.className = "site-beacon";
+    el.setAttribute("aria-label", `Fly to ${siteName ?? "the study area"}`);
+    el.innerHTML = `<span class="site-ring"></span><span class="site-name"></span>`;
+    (el.querySelector(".site-name") as HTMLElement).textContent = siteName ?? "Study area";
+    el.addEventListener("click", (e) => {
+      e.stopPropagation();
+      flyToArea(main, target.current, 2600);
+    });
+    const mk = new maplibregl.Marker({ element: el, anchor: "left", offset: [-9, 0] }).setLngLat(centerOf(bounds)).addTo(main);
+    return () => { mk.remove(); };
+  }, [loaded, zoomedOut, bounds, siteName]);
 
   // Click anywhere for that spot's history. Both maps listen: in swipe mode the left side is the
   // compare map. The latest handler is kept in a ref so the listeners are attached once.
@@ -302,7 +389,7 @@ export function MapView(props: Props) {
 
   return (
     <div className="map-wrap">
-      <div ref={mainEl} className="map" />
+      <div ref={mainEl} className={`map ${zoomedOut ? "is-globe" : ""}`} />
       <div
         ref={cmpEl}
         className="map map-compare"
