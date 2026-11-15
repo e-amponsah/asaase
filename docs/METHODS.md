@@ -219,6 +219,29 @@ We therefore keep the HV footprint for detection and do not show coherence as a 
   slopes still show false change. The pass stays on the map with a note and is left out of the charts.
 - Every other pass on both tracks lines up within 0.05 pixels, and both frame mosaics show no seams.
 
+## What drives the patterns
+
+The challenge asks what physical processes produce the changes we see. For each story, the mechanism and
+the measurement that supports it:
+
+**Galamsey**
+
+| Pattern in the radar | Physical driver | What we measured |
+| --- | --- | --- |
+| Scars are dark in HV | Clearing removes the canopy's volume scattering, which is what returns a rotated (HV) echo | HV median −11.3 dB in intact forest vs −17.1 dB in the scars (10 Oct 2026) |
+| Scars branch like a river network | Galamsey works alluvial gold in stream beds and banks, so digging follows the drainage | The footprint traces the stream network; Sentinel-1 shows it climbing side valleys from 2021 to 2026 |
+| The darkest patches inside scars | Abandoned pits fill with water in the rainy season; calm water reflects the pulse away | About 5.5% of the scar area is below −20 dB; the spots that stayed incoherent on almost every pass in our coherence test were these pits |
+| The whole scene darkens or brightens slightly | Soil and canopy moisture change the echo everywhere | Drift of −0.65 to +0.12 dB over intact forest, removed before detecting change |
+
+**Floods**
+
+| Pattern in the radar | Physical driver | What we measured |
+| --- | --- | --- |
+| The flood is bright in HH, not black | Water spreads under vegetation on flat floodplains; the pulse bounces off water then stems (double bounce) | Flooded vegetation peaks at 10.7 km²; new open water never exceeds 1.3 km² |
+| HH rises much more than HV | Double bounce boosts HH far more than HV; wet soil and growing crops raise both together | Rule: HH up ≥ 3 dB **and** ≥ 1.5 dB more than HV; false alarms 0.3 km² on a dry pass |
+| A rise and fall in about eight weeks | Water from the Bagré spill (from 28 Aug) and late rains, then draining | About 1 km² before the spill → 10.7 km² on 21 Sep → 0 by 27 Oct |
+| Flooding concentrated on the lower Kulpawn and Sissili | Low-lying tributary floodplains next to the White Volta; a high main river can hold water back in tributaries | 8.4 of 11.9 km² at the peak lies nearest these two rivers |
+
 ## What we are checking next
 
 - **Naming the industrial site** near 5.96°N, 1.92°W from a public source, and showing it apart from

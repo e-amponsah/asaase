@@ -48,6 +48,62 @@ const SCATTER = [
   },
 ];
 
+/** Physical drivers behind what each story shows, each tied to a number we measured. */
+const DRIVERS: { story: string; title: string; items: { k: string; title: string; text: string }[] }[] = [
+  {
+    story: "Where the forest went",
+    title: "Why the mining scars look the way they do",
+    items: [
+      {
+        k: "−11 → −17 dB",
+        title: "Stripping the canopy kills the HV echo",
+        text: "Intact forest scatters the pulse back rotated (HV) from millions of leaves and branches. Clear it to bare soil and that volume echo is gone: HV drops by about 6 dB, which is why scars stand out so sharply.",
+      },
+      {
+        k: "Follows the streams",
+        title: "Gold sits in river gravels",
+        text: "Galamsey works alluvial gold in stream beds and banks, so the digging follows the drainage network. That is why the scars branch like a river system and climb up the side valleys year by year.",
+      },
+      {
+        k: "≈ 6% below −20 dB",
+        title: "Abandoned pits fill with water",
+        text: "In the rainy season, dug pits flood. Calm water reflects the pulse away like a mirror, so these are the darkest parts of the scars, and they stay that way pass after pass.",
+      },
+      {
+        k: "± 0.7 dB",
+        title: "Rain shifts the whole scene",
+        text: "Wetter soil and canopy change the echo a little everywhere. We measure that shift on intact forest and remove it, so only real clearing counts as change.",
+      },
+    ],
+  },
+  {
+    story: "The Volta breathes",
+    title: "Why the flood shows up bright, not black",
+    items: [
+      {
+        k: "HH ≫ HV",
+        title: "Water hides under vegetation",
+        text: "On the flat floodplains of the lower Kulpawn and Sissili, water spreads under the vegetation instead of forming open lakes. The pulse bounces off the water, then the stems, and straight back: HH brightens far more than HV.",
+      },
+      {
+        k: "HH ≈ HV",
+        title: "Wet soil and crops are not floods",
+        text: "Rain-soaked fields and growing crops brighten both channels together. Requiring HH to rise at least 1.5 dB more than HV is how we tell flood water from a wet season.",
+      },
+      {
+        k: "1 → 10.7 → 0 km²",
+        title: "A flood rises and falls",
+        text: "Flooded vegetation grew from about 1 km² before the Bagré spill to 10.7 km² on 21 September, three weeks after it began, and was gone by late October.",
+      },
+      {
+        k: "Tributaries",
+        title: "Where the water goes",
+        text: "Most flooding sits near the Kulpawn–Sissili confluence, just upstream of the White Volta. A high main river can hold water back in its tributaries; radar alone cannot say how much came from the spill and how much from rain.",
+      },
+    ],
+  },
+];
+
 const FACTS = [
   { k: "L-band", v: "24 cm wavelength" },
   { k: "12 days", v: "repeat pass" },
@@ -89,16 +145,38 @@ export function LearnView({ onStory }: { onStory: (id: StoryId) => void }) {
         ))}
       </section>
 
+      <section className="drivers" aria-labelledby="drivers-title">
+        <p className="kicker">What drives the patterns</p>
+        <h2 id="drivers-title" className="drivers-title">The physics behind each story, and the numbers we measured</h2>
+        <div className="drivers-grid">
+          {DRIVERS.map((d) => (
+            <article key={d.story} className="drivers-col">
+              <p className="drivers-story">{d.story}</p>
+              <h3>{d.title}</h3>
+              <ol>
+                {d.items.map((it) => (
+                  <li key={it.title}>
+                    <span className="drivers-k">{it.k}</span>
+                    <strong>{it.title}</strong>
+                    <p>{it.text}</p>
+                  </li>
+                ))}
+              </ol>
+            </article>
+          ))}
+        </div>
+      </section>
+
       <section className="learn-cta">
         <button className="cta" onClick={() => onStory("galamsey")}>
           <span className="cta-k">Story 1</span>
           <strong>Where the forest went</strong>
-          <span>Track canopy loss from galamsey along the Offin River</span>
+          <span>See how galamsey scars spread along the Offin River</span>
         </button>
         <button className="cta" onClick={() => onStory("floods")}>
           <span className="cta-k">Story 2</span>
           <strong>The Volta breathes</strong>
-          <span>Watch the 2026 Bagré spill flood the White Volta</span>
+          <span>Watch the 2026 flood rise and fall after the Bagré spill</span>
         </button>
       </section>
     </main>
