@@ -219,6 +219,49 @@ We therefore keep the HV footprint for detection and do not show coherence as a 
   slopes still show false change. The pass stays on the map with a note and is left out of the charts.
 - Every other pass on both tracks lines up within 0.05 pixels, and both frame mosaics show no seams.
 
+## How we know: validation against independent data
+
+Run with `asaase validate galamsey` and `asaase validate floods`.
+
+### Galamsey vs Global Forest Watch
+
+We compared NISAR's mining-scar footprint (24 June 2026, 150 km²) with the Hansen / Global Forest Watch
+tree-cover loss map (University of Maryland, Landsat, 30 m, 2001–2024, version 1.12). It is made from
+optical imagery, so it shares nothing with our radar method.
+
+| Check | Result |
+| --- | --- |
+| Was the scarred land forest in 2000 (≥ 50% tree cover)? | **75%** of the scar area was |
+| Share of 68 m cells with recorded forest loss (≥ 25% of the cell, 2001–2024) | **57%** inside our scars vs **35%** elsewhere in the study area |
+| Share of all recorded forest loss that falls inside our scars | 17%: most loss here is farming and logging, which is not mining |
+
+**The timeline agrees.** Forest loss that Global Forest Watch recorded inside our scars was high in
+2014–2017 (5.4–7.7 km² a year), fell in 2018–2021 (2.3–3.6 km² a year) and surged in 2022–2023 (7.1 and
+11.2 km²). That is the same rise, dip and resurgence our independent Sentinel-1 series shows, from a
+different satellite and a different kind of sensor.
+
+Limits: scars on land cleared before 2001, river channels and existing pits show no recorded loss, so
+57% is a floor on agreement rather than an error rate.
+
+### Floods vs Sentinel-1
+
+We checked whether a second, independent radar sees the same flood. Sentinel-1 (C-band, 6 cm wavelength)
+passes over at different times and with a different geometry. We compared its median over the dry season
+(1 July – 20 August 2026, 24 scenes) with mid-September (14–28 September, 6 scenes), at the places NISAR
+flagged as flooded on 21 September, and at nearby land 2–10 km away as a control.
+
+| Sentinel-1 channel | Flooded places: median change | Nearby land: median change | Brightened by 3 dB or more: flooded vs nearby |
+| --- | --- | --- | --- |
+| VV | +1.8 dB | +0.4 dB | 26% vs 1.8% (about 15×) |
+| VH | +2.5 dB | +1.0 dB | 33% vs 6.4% (about 5×) |
+
+Sentinel-1 shows the brightening concentrated where NISAR found flooded vegetation, on the same dates.
+The change is smaller than in NISAR's L-band, as expected: the shorter C-band wave penetrates vegetation
+less, so less of it reaches the water underneath to bounce back.
+
+Limits: we have no field data or flood photographs for these exact places, so this
+confirms the radar signal with a second sensor rather than with ground truth.
+
 ## What drives the patterns
 
 The challenge asks what physical processes produce the changes we see. For each story, the mechanism and

@@ -1,4 +1,4 @@
-"""Command line: asaase {search,download,quicklook,coherence,exposure,longview,build} <story>"""
+"""Command line: asaase {search,download,quicklook,coherence,exposure,longview,validate,build} <story>"""
 
 from __future__ import annotations
 
@@ -36,6 +36,9 @@ def main(argv: list[str] | None = None) -> None:
     b = sub.add_parser("build", help="write web layers and story.json for the app")
     b.add_argument("story", choices=stories)
 
+    v = sub.add_parser("validate", help="check results against independent data (Hansen loss, Sentinel-1)")
+    v.add_argument("story", choices=stories)
+
     lv = sub.add_parser("longview", help="Sentinel-1 yearly scar layers, 2016-2026 (galamsey)")
     lv.add_argument("story", choices=["galamsey"])
     lv.add_argument("--fetch", action="store_true", help="read and cache the yearly composites first")
@@ -70,6 +73,10 @@ def main(argv: list[str] | None = None) -> None:
         from .quicklook import quicklook
 
         print(quicklook(args.story, args.before, args.after, args.pol))
+    elif args.cmd == "validate":
+        from .validate import run
+
+        print(run(args.story))
     elif args.cmd == "longview":
         from .longview import build_longview, fetch_longview
 
