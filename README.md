@@ -123,7 +123,7 @@ Landsat, through Global Forest Watch.
 - Basemaps: Esri (Dark Gray Canvas, World Imagery).
 - Sentinel-1 (Copernicus, ESA), terrain-corrected, via [Microsoft Planetary Computer](https://planetarycomputer.microsoft.com/dataset/sentinel-1-rtc).
 - Population: [WorldPop](https://www.worldpop.org/) 2020, Ghana, constrained, 100 m (CC BY 4.0).
-- Settlements, forest-reserve and mine outlines: © [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors (ODbL).
+- Rivers, settlements, forest-reserve and mine outlines: © [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors (ODbL).
 - News and context sources are listed in each story's panel.
 
 ## Licence

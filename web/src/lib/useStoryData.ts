@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import type { Exposure, LongView, Reserves, StoryContent, StoryData } from "../types";
+import type { Exposure, LongView, Reserves, Rivers, StoryContent, StoryData } from "../types";
 
 /**
  * Loads pipeline output (public/data/<story>/story.json). Until the pipeline has run,
@@ -10,12 +10,13 @@ interface Loaded {
   exposure: Exposure | null;
   longview: LongView | null;
   reserves: Reserves | null;
+  rivers: Rivers | null;
   loading: boolean;
 }
 
 export function useStoryData(story: StoryContent): Loaded {
-  const [state, setState] = useState<{ id: string; data: StoryData | null; exposure: Exposure | null; longview: LongView | null; reserves: Reserves | null }>(
-    { id: "", data: null, exposure: null, longview: null, reserves: null },
+  const [state, setState] = useState<{ id: string; data: StoryData | null; exposure: Exposure | null; longview: LongView | null; reserves: Reserves | null; rivers: Rivers | null }>(
+    { id: "", data: null, exposure: null, longview: null, reserves: null, rivers: null },
   );
 
   useEffect(() => {
@@ -26,9 +27,9 @@ export function useStoryData(story: StoryContent): Loaded {
         .catch(() => null);
     // exposure.json (floods) and longview/longview.json (galamsey) are optional.
     Promise.all([get<StoryData>("story.json"), get<Exposure>("exposure.json"), get<LongView>("longview/longview.json"),
-                 get<Reserves>("reserves.geojson")])
-      .then(([json, exposure, longview, reserves]) => {
-        if (!cancelled) setState({ id: story.id, data: json?.frames?.length ? json : null, exposure, longview, reserves });
+                 get<Reserves>("reserves.geojson"), get<Rivers>("rivers.geojson")])
+      .then(([json, exposure, longview, reserves, rivers]) => {
+        if (!cancelled) setState({ id: story.id, data: json?.frames?.length ? json : null, exposure, longview, reserves, rivers });
       });
     return () => {
       cancelled = true;
@@ -52,6 +53,7 @@ export function useStoryData(story: StoryContent): Loaded {
     exposure: current ? state.exposure : null,
     longview: current ? state.longview : null,
     reserves: current ? state.reserves : null,
+    rivers: current ? state.rivers : null,
     loading: !current,
   };
 }

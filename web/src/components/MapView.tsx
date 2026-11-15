@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import maplibregl, { type ImageSource, type Map as MLMap, type StyleSpecification } from "maplibre-gl";
 import { shortDate } from "../lib/format";
 import type { Theme } from "../lib/useTheme";
-import type { Bounds, Community, Frame, Place, Reserves } from "../types";
+import type { Bounds, Community, Frame, Place, Reserves, Rivers } from "../types";
 
 export type Basemap = "dark" | "satellite";
 
@@ -13,6 +13,8 @@ interface Props {
   outlines?: string;
   reserves?: Reserves | null;
   showReserves?: boolean;
+  rivers?: Rivers | null;
+  showRivers?: boolean;
   places: Place[];
   communities?: Community[];
   spot?: { lon: number; lat: number } | null;
@@ -51,6 +53,7 @@ const STYLE: StyleSpecification = {
     aoi: { type: "geojson", data: { type: "FeatureCollection", features: [] } },
     outlines: { type: "geojson", data: { type: "FeatureCollection", features: [] } },
     reserves: { type: "geojson", data: { type: "FeatureCollection", features: [] } },
+    rivers: { type: "geojson", data: { type: "FeatureCollection", features: [] } },
   },
   layers: [
     { id: "bg", type: "background", paint: { "background-color": "#0a0e0d" } },
@@ -61,6 +64,8 @@ const STYLE: StyleSpecification = {
     { id: "aoi-line", type: "line", source: "aoi", paint: { "line-color": "#ffffff", "line-opacity": 0.35, "line-width": 1 } },
     { id: "reserves-fill", type: "fill", source: "reserves", layout: { visibility: "none" }, paint: { "fill-color": "#2fa36b", "fill-opacity": 0.1 } },
     { id: "reserves-line", type: "line", source: "reserves", layout: { visibility: "none" }, paint: { "line-color": "#4cd08a", "line-width": 1.6, "line-dasharray": [3, 2] } },
+    { id: "rivers-halo", type: "line", source: "rivers", layout: { "line-join": "round", "line-cap": "round" }, paint: { "line-color": "#0b1a2a", "line-width": 3.4, "line-opacity": 0.45 } },
+    { id: "rivers", type: "line", source: "rivers", layout: { "line-join": "round", "line-cap": "round" }, paint: { "line-color": "#5cb8ff", "line-width": ["interpolate", ["linear"], ["zoom"], 7, 1.2, 12, 2.4] } },
     { id: "outlines", type: "line", source: "outlines", paint: { "line-color": "#ffffff", "line-width": 1.6, "line-dasharray": [2, 1.5], "line-opacity": 0.95 } },
     { id: "labels", type: "raster", source: "labels", paint: { "raster-opacity": 0.85 } },
     { id: "labels-light", type: "raster", source: "lightLabels", layout: { visibility: "none" }, paint: { "raster-opacity": 0.9 } },
@@ -119,7 +124,7 @@ function placeMarker(p: Place) {
 }
 
 export function MapView(props: Props) {
-  const { bounds, focus, outlines, reserves = null, showReserves = false, storyKey, places, communities = [], spot = null, longview = null, onSpot, frame, compareFrame, date, compareDate, basemap, theme = "dark", showBase, showFootprint, showChange, hasData } = props;
+  const { bounds, focus, outlines, reserves = null, showReserves = false, rivers = null, showRivers = true, storyKey, places, communities = [], spot = null, longview = null, onSpot, frame, compareFrame, date, compareDate, basemap, theme = "dark", showBase, showFootprint, showChange, hasData } = props;
   const mainEl = useRef<HTMLDivElement>(null);
   const cmpEl = useRef<HTMLDivElement>(null);
   const maps = useRef<{ main: MLMap; cmp: MLMap } | null>(null);
@@ -211,6 +216,23 @@ export function MapView(props: Props) {
       m.setLayoutProperty("reserves-line", "visibility", vis);
     }
   }, [loaded, reserves, showReserves]);
+
+  // Rivers (OpenStreetMap): lines on both maps, a name label on the main map.
+  useEffect(() => {
+    if (!loaded || !maps.current) return;
+    for (const m of [maps.current.main, maps.current.cmp]) {
+      (m.getSource("rivers") as maplibregl.GeoJSONSource).setData(rivers ?? { type: "FeatureCollection", features: [] });
+      for (const id of ["rivers", "rivers-halo"]) m.setLayoutProperty(id, "visibility", showRivers ? "visible" : "none");
+    }
+    if (!showRivers || !rivers) return;
+    const labels = rivers.features.map((f) => {
+      const el = document.createElement("div");
+      el.className = "river-label";
+      el.textContent = f.properties.name;
+      return new maplibregl.Marker({ element: el }).setLngLat([f.properties.labelLon, f.properties.labelLat]).addTo(maps.current!.main);
+    });
+    return () => labels.forEach((l) => l.remove());
+  }, [loaded, rivers, showRivers]);
 
   // Settlements near flood water on the current pass (main map only).
   const communityKey = communities.map((c) => c.name).join("|");

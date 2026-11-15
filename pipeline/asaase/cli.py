@@ -1,4 +1,4 @@
-"""Command line: asaase {search,download,quicklook,coherence,exposure,longview,validate,reserves,build} <story>"""
+"""Command line: asaase {search,download,quicklook,coherence,exposure,longview,validate,reserves,rivers,build} <story>"""
 
 from __future__ import annotations
 
@@ -35,6 +35,9 @@ def main(argv: list[str] | None = None) -> None:
 
     b = sub.add_parser("build", help="write web layers and story.json for the app")
     b.add_argument("story", choices=stories)
+
+    rv = sub.add_parser("rivers", help="named rivers from OpenStreetMap for the map")
+    rv.add_argument("story", choices=stories)
 
     rs = sub.add_parser("reserves", help="mining damage inside forest reserves (galamsey)")
     rs.add_argument("story", choices=["galamsey"])
@@ -76,6 +79,10 @@ def main(argv: list[str] | None = None) -> None:
         from .quicklook import quicklook
 
         print(quicklook(args.story, args.before, args.after, args.pol))
+    elif args.cmd == "rivers":
+        from .rivers import build_rivers
+
+        print(build_rivers(args.story))
     elif args.cmd == "reserves":
         from .reserves import build_reserves
 
