@@ -85,10 +85,28 @@ export interface LongView {
   years: LongViewYear[];
 }
 
+/** Forest reserves with mining damage (web/public/data/galamsey/reserves.geojson). */
+export interface ReserveProps {
+  name: string;
+  source: string;
+  areaHa: number;
+  scarHa: number;
+  scarPct: number;
+  asOf: string;
+  s1Ha2021?: number;
+  s1Ha2026?: number;
+}
+
+export interface Reserves {
+  type: "FeatureCollection";
+  features: { type: "Feature"; properties: ReserveProps; geometry: { type: "Polygon"; coordinates: number[][][] } }[];
+}
+
 export interface Place {
   name: string;
   lon: number;
   lat: number;
+  side?: "left";   // put the label on the left of the dot (avoids collisions)
 }
 
 export interface Stat {
@@ -120,6 +138,8 @@ export interface StoryContent {
   title: string;
   lede: string;
   bounds: Bounds;
+  focus?: Bounds;      // where the map opens, if not the whole study area
+  outlines?: string;   // GeoJSON of areas drawn as dashed outlines (e.g. licensed mines)
   track: string;
   dates: string[];
   basePolLabel: string;

@@ -14,11 +14,13 @@ export interface PixelGrid {
   values: Int16Array; // [date][row][col], row 0 = north
 }
 
-/** Loads the coarse per-pixel backscatter history (about 170 m cells) for click-a-spot charts. */
-export function usePixels(story: StoryId): PixelGrid | null {
+/** Loads the coarse per-pixel backscatter history (about 170 m cells) for click-a-spot charts.
+ *  It is about 1 MB, so it is fetched only once `enabled` (the first map click), not on page load. */
+export function usePixels(story: StoryId, enabled = true): PixelGrid | null {
   const [state, setState] = useState<{ id: StoryId | ""; grid: PixelGrid | null }>({ id: "", grid: null });
 
   useEffect(() => {
+    if (!enabled) return;
     let cancelled = false;
     const base = import.meta.env.BASE_URL;
     fetch(`${base}data/${story}/pixels.json`)
@@ -32,7 +34,7 @@ export function usePixels(story: StoryId): PixelGrid | null {
       .catch(() => null)
       .then((grid) => { if (!cancelled) setState({ id: story, grid }); });
     return () => { cancelled = true; };
-  }, [story]);
+  }, [story, enabled]);
 
   return state.id === story ? state.grid : null;
 }

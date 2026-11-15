@@ -21,11 +21,11 @@ export function LongViewCard({ data, year, onYear }: Props) {
   const ratio = last.scarKm2 / Math.min(...ys.map((y) => y.scarKm2));
 
   return (
-    <section className="card">
-      <header className="card-head">
-        <h2>How fast the scars spread</h2>
-        <span className="badge">Sentinel-1 · {first.year}–{last.year}</span>
-      </header>
+    <details className="section" open>
+      <summary>
+        How fast the scars spread
+        <span className="source-tag">Sentinel-1 · {first.year}–{last.year}</span>
+      </summary>
       <p className="lv-lede">
         Mining scars in the dry season of each year, from Sentinel-1 radar.
         {" "}<strong>{Math.round(last.scarKm2)} km²</strong> in {last.year}, about {ratio.toFixed(1)}× the low point.
@@ -60,6 +60,6 @@ export function LongViewCard({ data, year, onYear }: Props) {
         Sentinel-1 is C-band radar, coarser than NISAR for this job; its scar line is set to match NISAR's
         2026 footprint. Years with too few passes are left out.
       </p>
-    </section>
+    </details>
   );
 }

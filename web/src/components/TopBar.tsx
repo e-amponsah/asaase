@@ -1,27 +1,26 @@
-import { LANGUAGES, STORIES } from "../content/stories";
+import { STORIES } from "../content/stories";
+import type { Theme } from "../lib/useTheme";
 import type { View } from "../types";
 import { Logo } from "./Logo";
 
 const TABS: { id: View; label: string; short: string }[] = [
-  { id: "galamsey", label: STORIES.galamsey.nav, short: "Forest" },
-  { id: "floods", label: STORIES.floods.nav, short: "Volta floods" },
+  { id: "galamsey", label: STORIES.galamsey.nav, short: "Galamsey" },
+  { id: "floods", label: STORIES.floods.nav, short: "Floods" },
   { id: "learn", label: "How radar sees", short: "Radar 101" },
 ];
 
-export function TopBar({ view, onView }: { view: View; onView: (v: View) => void }) {
+/** Slim app bar: brand, the three views, and where the data comes from. */
+export function TopBar({ view, onView, theme, onTheme }: { view: View; onView: (v: View) => void; theme: Theme; onTheme: () => void }) {
   return (
     <header className="topbar">
       <div className="kente" aria-hidden="true" />
       <div className="topbar-inner">
-        <a className="brand" href="#" onClick={(e) => { e.preventDefault(); onView("galamsey"); }}>
-          <Logo />
-          <span className="brand-text">
-            <span className="brand-name">Asaase</span>
-            <span className="brand-sub">Ghana's surface, seen by NISAR radar</span>
-          </span>
+        <a className="brand" href="#galamsey" aria-label="Asaase home" onClick={(e) => { e.preventDefault(); onView("galamsey"); }}>
+          <Logo size={26} />
+          <span className="brand-name">Asaase</span>
         </a>
 
-        <nav className="tabs" aria-label="Stories">
+        <nav className="tabs" aria-label="Views">
           {TABS.map((t) => (
             <button
               key={t.id}
@@ -30,24 +29,27 @@ export function TopBar({ view, onView }: { view: View; onView: (v: View) => void
               onClick={() => onView(t.id)}
             >
               <span className="tab-long">{t.label}</span>
-              <span className="tab-short" aria-hidden="true">{t.short}</span>
+              <span className="tab-short">{t.short}</span>
             </button>
           ))}
         </nav>
 
-        <label className="lang">
-          <span className="sr-only">Language</span>
-          <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
-            <path fill="none" stroke="currentColor" strokeWidth="1.8" d="M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18Zm-9 9h18M12 3c2.5 2.6 3.8 5.6 3.8 9S14.5 18.4 12 21c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3Z" />
-          </svg>
-          <select defaultValue="en">
-            {LANGUAGES.map((l) => (
-              <option key={l.code} value={l.code} disabled={!l.ready}>
-                {l.label}{l.ready ? "" : " (soon)"}
-              </option>
-            ))}
-          </select>
-        </label>
+        <div className="topbar-end">
+          <a className="data-credit" href="https://nisar.jpl.nasa.gov/" target="_blank" rel="noreferrer"
+             title="Radar data: NASA-ISRO NISAR, via NASA's Alaska Satellite Facility">
+            <span className="data-dot" aria-hidden="true" />
+            NASA-ISRO NISAR data
+          </a>
+          <button className="icon-btn theme-toggle" onClick={onTheme}
+                  aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+                  title={theme === "dark" ? "Light mode" : "Dark mode"}>
+            {theme === "dark" ? (
+              <svg width="17" height="17" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" strokeWidth="1.8" /><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" /></svg>
+            ) : (
+              <svg width="17" height="17" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" /></svg>
+            )}
+          </button>
+        </div>
       </div>
     </header>
   );

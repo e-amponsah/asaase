@@ -32,7 +32,10 @@ In the app you can:
 - switch between the radar and satellite photos to check what the radar found;
 - read the area affected on each pass in a chart, or **listen** to it as a rhythm;
 - see **how many people live near the flood water** on each pass, and which settlements;
-- **click any spot** to see its radar history over every pass, with a plain-language reading.
+- **click any spot** to see its radar history over every pass, with a plain-language reading;
+- see **forest reserves** and how much of each is scarred, and the licensed Edikan mine kept apart from galamsey;
+- **share** the current view as an image (WhatsApp-ready on phones);
+- switch between **light and dark** mode.
 
 Real NISAR data, no server: the app is a static site that loads fast on mobile data.
 
@@ -109,12 +112,18 @@ Never commit credentials: `.gitignore` excludes `.netrc`, `.env` and all `.h5` f
 
 ## Data and credits
 
+**NASA data at the core.** Both stories are built on NISAR, the NASA–ISRO L-band radar mission: Level-2
+GCOV backscatter for every pass June–October 2026 and GUNW interferometric products, distributed by
+NASA's Alaska Satellite Facility DAAC through NASA Earthdata. The forest-loss check also rests on NASA/USGS
+Landsat, through Global Forest Watch.
+
+
 - NISAR L-band products: NASA/JPL-Caltech and ISRO, distributed by the
   [ASF DAAC](https://nisar-docs.asf.alaska.edu/).
 - Basemaps: Esri (Dark Gray Canvas, World Imagery).
 - Sentinel-1 (Copernicus, ESA), terrain-corrected, via [Microsoft Planetary Computer](https://planetarycomputer.microsoft.com/dataset/sentinel-1-rtc).
 - Population: [WorldPop](https://www.worldpop.org/) 2020, Ghana, constrained, 100 m (CC BY 4.0).
-- Settlements: © [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors (ODbL).
+- Settlements, forest-reserve and mine outlines: © [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors (ODbL).
 - News and context sources are listed in each story's panel.
 
 ## Licence

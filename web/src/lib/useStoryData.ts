@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import type { Exposure, LongView, StoryContent, StoryData } from "../types";
+import type { Exposure, LongView, Reserves, StoryContent, StoryData } from "../types";
 
 /**
  * Loads pipeline output (public/data/<story>/story.json). Until the pipeline has run,
@@ -9,12 +9,13 @@ interface Loaded {
   data: StoryData;
   exposure: Exposure | null;
   longview: LongView | null;
+  reserves: Reserves | null;
   loading: boolean;
 }
 
 export function useStoryData(story: StoryContent): Loaded {
-  const [state, setState] = useState<{ id: string; data: StoryData | null; exposure: Exposure | null; longview: LongView | null }>(
-    { id: "", data: null, exposure: null, longview: null },
+  const [state, setState] = useState<{ id: string; data: StoryData | null; exposure: Exposure | null; longview: LongView | null; reserves: Reserves | null }>(
+    { id: "", data: null, exposure: null, longview: null, reserves: null },
   );
 
   useEffect(() => {
@@ -24,9 +25,10 @@ export function useStoryData(story: StoryContent): Loaded {
         .then((r) => (r.ok ? r.json() : null))
         .catch(() => null);
     // exposure.json (floods) and longview/longview.json (galamsey) are optional.
-    Promise.all([get<StoryData>("story.json"), get<Exposure>("exposure.json"), get<LongView>("longview/longview.json")])
-      .then(([json, exposure, longview]) => {
-        if (!cancelled) setState({ id: story.id, data: json?.frames?.length ? json : null, exposure, longview });
+    Promise.all([get<StoryData>("story.json"), get<Exposure>("exposure.json"), get<LongView>("longview/longview.json"),
+                 get<Reserves>("reserves.geojson")])
+      .then(([json, exposure, longview, reserves]) => {
+        if (!cancelled) setState({ id: story.id, data: json?.frames?.length ? json : null, exposure, longview, reserves });
       });
     return () => {
       cancelled = true;
@@ -49,6 +51,7 @@ export function useStoryData(story: StoryContent): Loaded {
     data: current && state.data ? state.data : fallback,
     exposure: current ? state.exposure : null,
     longview: current ? state.longview : null,
+    reserves: current ? state.reserves : null,
     loading: !current,
   };
 }

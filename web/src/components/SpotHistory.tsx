@@ -1,7 +1,7 @@
 import { shortDate, toTime } from "../lib/format";
 import type { PixelGrid } from "../lib/usePixels";
 import { pixelHistory } from "../lib/usePixels";
-import type { Frame, StoryId } from "../types";
+import type { Frame, ReserveProps, StoryId } from "../types";
 
 interface Props {
   story: StoryId;
@@ -13,6 +13,7 @@ interface Props {
   scarThresholdDb?: number;   // galamsey: HV below this = mining scar
   color: string;
   onPick: (date: string) => void;
+  reserve?: ReserveProps | null;
   onClose: () => void;
 }
 
@@ -23,7 +24,7 @@ const PAD = { l: 34, r: 10, t: 12, b: 20 };
 const mean = (xs: number[]) => xs.reduce((a, b) => a + b, 0) / xs.length;
 
 /** A clicked spot's radar history: one point per pass, with a reference line and a plain reading. */
-export function SpotHistory({ story, grid, lon, lat, currentDate, frames, scarThresholdDb, color, onPick, onClose }: Props) {
+export function SpotHistory({ story, grid, lon, lat, currentDate, frames, scarThresholdDb, color, onPick, reserve, onClose }: Props) {
   const values = pixelHistory(grid, lon, lat);
   const pts = (values ?? [])
     .map((v, i) => ({ date: grid.dates[i], v }))
@@ -124,6 +125,9 @@ export function SpotHistory({ story, grid, lon, lat, currentDate, frames, scarTh
             <p className="spot-legend"><span className="spot-dash" />{ref.label} ({ref.db.toFixed(1)} dB)</p>
           )}
           {reading && <p className="spot-reading">{reading}</p>}
+          {reserve && (
+            <p className="spot-reserve">Inside <strong>{reserve.name}</strong>: {reserve.scarHa.toLocaleString("en-GB")} ha of it is scarred ({reserve.scarPct}%).</p>
+          )}
         </>
       )}
     </div>
